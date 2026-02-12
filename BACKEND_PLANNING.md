@@ -6,12 +6,13 @@
 - **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
 - **Database ORM**: Prisma
-- **Database**: PostgreSQL (recommended) / MySQL
+- **Database**: PostgreSQL (via Supabase / Neon / local)
 - **Authentication**: NextAuth.js v5 (Auth.js)
-- **File Storage**: AWS S3 / Cloudinary / Vercel Blob
-- **Payment Processing**: Stripe
-- **Email Service**: Resend / SendGrid
-- **Video Hosting**: AWS S3 + CloudFront / Vimeo API
+- **File Storage**: Cloudinary / Vercel Blob (local uploads for dev)
+- **Email Service**: Resend (optional for uni project)
+- **Video Hosting**: Local uploads / Cloudinary
+
+> **Note**: Stripe payment processing has been removed — this is a university project. Enrollments will be free/simulated.
 
 ---
 
@@ -236,10 +237,8 @@ model Enrollment {
   courseId        String
   course          Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   
-  // Payment
-  price           Decimal  @db.Decimal(10, 2)
-  paymentStatus   PaymentStatus @default(PENDING)
-  paymentId       String?  // Stripe payment ID
+  // Enrollment (free — no payment)
+  price           Decimal  @default(0) @db.Decimal(10, 2)
   
   // Progress
   progress        Decimal  @default(0) @db.Decimal(5, 2) // Percentage
@@ -587,12 +586,9 @@ GET  /api/admin/analytics            -> Platform analytics
 ## 📁 File Upload Strategy
 
 ### Video Content
-- **Storage**: AWS S3 or Cloudinary
-- **Processing**: AWS MediaConvert for HLS/DASH streaming
-- **CDN**: CloudFront for fast delivery
-- **Formats**: Support MP4, MOV, AVI (convert to web-optimized formats)
-- **Max Size**: 5GB per video
-- **Security**: Signed URLs with expiration
+- **Storage**: Cloudinary or local uploads (dev)
+- **Formats**: Support MP4, MOV (web-optimized)
+- **Max Size**: 500MB per video (uni project limit)
 
 ### Images (Thumbnails, Avatars)
 - **Storage**: Cloudinary or Vercel Blob
@@ -601,49 +597,22 @@ GET  /api/admin/analytics            -> Platform analytics
 - **Formats**: JPG, PNG, WebP
 
 ### Documents (Course Resources)
-- **Storage**: AWS S3
+- **Storage**: Local / Cloudinary
 - **Types**: PDF, DOCX, XLSX, ZIP
-- **Max Size**: 100MB
+- **Max Size**: 50MB
 
 ---
 
-## 💳 Payment Integration (Stripe)
+## � Email Notifications (Optional)
 
-### Payment Flow
-1. Student clicks "Enroll" on course
-2. Frontend creates Stripe Checkout Session
-3. Redirect to Stripe-hosted checkout page
-4. On success, Stripe webhook triggers enrollment
-5. Update database and send confirmation email
-
-### Webhook Events
-```typescript
-// Listen for these Stripe events:
-- checkout.session.completed  -> Create enrollment
-- payment_intent.succeeded    -> Confirm payment
-- charge.refunded            -> Handle refund
-```
-
-### Revenue Splits
-- **Platform Fee**: 10% of course price
-- **Creator Payout**: 90% of course price
-- **Payout Schedule**: Monthly (minimum $50 balance)
-
----
-
-## 📧 Email Notifications
-
-### Transactional Emails (Resend/SendGrid)
+### Transactional Emails (Resend — optional for demo)
 1. **Welcome Email** - New user registration
 2. **Email Verification** - Confirm email address
-3. **Enrollment Confirmation** - Course purchase
+3. **Enrollment Confirmation** - Course enrollment
 4. **Course Update** - New content added
 5. **Certificate** - Course completion
-6. **Payment Receipt** - Transaction confirmation
-7. **Password Reset** - Password change request
-8. **New Message** - Message notification
-9. **Review Response** - Creator responds to review
-10. **Payout Notification** - Monthly earnings
+6. **Password Reset** - Password change request
+7. **New Message** - Message notification
 
 ---
 
@@ -765,12 +734,10 @@ GET  /api/admin/analytics            -> Platform analytics
 ### Production Setup
 ```
 ├── Next.js App (Vercel)
-├── PostgreSQL Database (Supabase/Neon)
-├── File Storage (AWS S3 / Cloudinary)
-├── Redis Cache (Upstash) [Optional]
-├── Email Service (Resend)
-├── Payment (Stripe)
-└── Monitoring (Sentry)
+├── PostgreSQL Database (Supabase / Neon / local)
+├── File Storage (Cloudinary / local)
+├── Email Service (Resend) [Optional]
+└── Monitoring (Sentry) [Optional]
 ```
 
 ### Environment Variables
@@ -780,11 +747,9 @@ NEXTAUTH_SECRET=
 NEXTAUTH_URL=
 GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
-STRIPE_SECRET_KEY=
-STRIPE_WEBHOOK_SECRET=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_S3_BUCKET=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 RESEND_API_KEY=
 ```
 
@@ -840,6 +805,6 @@ RESEND_API_KEY=
 
 ---
 
-**Document Status**: Planning Phase  
-**Last Updated**: January 25, 2026  
-**Version**: 1.0.0
+**Document Status**: Implementation Phase — Foundation  
+**Last Updated**: February 9, 2026  
+**Version**: 1.1.0 (Removed Stripe — uni project)

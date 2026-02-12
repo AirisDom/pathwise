@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import FeaturesDetail from "@/components/ui/features-detail";
@@ -34,50 +35,52 @@ import {
   Award,
   BookMarked,
   Upload,
+  Loader2,
 } from "lucide-react";
 
+interface StatData {
+  title: string;
+  value: number;
+  delta: number;
+  lastMonth: number;
+  positive: boolean;
+  prefix: string;
+  suffix: string;
+}
+
 export default function CreatorDashboard() {
+  const { data: session, status } = useSession();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [coursesExpanded, setCoursesExpanded] = useState(false);
+  const [stats, setStats] = useState<StatData[]>([
+    { title: "Total Students",      value: 0, delta: 0, lastMonth: 0, positive: true, prefix: "", suffix: "" },
+    { title: "Monthly Enrollments", value: 0, delta: 0, lastMonth: 0, positive: true, prefix: "", suffix: "" },
+    { title: "Active Courses",      value: 0, delta: 0, lastMonth: 0, positive: true, prefix: "", suffix: "" },
+    { title: "Total Views",         value: 0, delta: 0, lastMonth: 0, positive: true, prefix: "", suffix: "" },
+  ]);
+  const [creatorInfo, setCreatorInfo] = useState<{ name: string; image: string | null }>({ name: "Creator", image: null });
+  const [statsLoading, setStatsLoading] = useState(true);
 
-  const stats = [
-    {
-      title: 'Total Students',
-      value: 2543,
-      delta: 15.1,
-      lastMonth: 2201,
-      positive: true,
-      prefix: '',
-      suffix: '',
-    },
-    {
-      title: 'Monthly Revenue',
-      value: 45678,
-      delta: 23.1,
-      lastMonth: 37120,
-      positive: true,
-      prefix: '$',
-      suffix: '',
-    },
-    {
-      title: 'Active Courses',
-      value: 12,
-      delta: 20.0,
-      lastMonth: 10,
-      positive: true,
-      prefix: '',
-      suffix: '',
-    },
-    {
-      title: 'Total Views',
-      value: 124500,
-      delta: 18.2,
-      lastMonth: 105350,
-      positive: true,
-      prefix: '',
-      suffix: '',
-    },
-  ];
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const res = await fetch("/api/creator/stats");
+        if (res.ok) {
+          const data = await res.json();
+          setStats(data.stats);
+          setCreatorInfo(data.creator);
+        }
+      } catch (err) {
+        console.error("Failed to load dashboard stats:", err);
+      } finally {
+        setStatsLoading(false);
+      }
+    }
+
+    if (status === "authenticated") {
+      fetchStats();
+    }
+  }, [status]);
 
   const navigationItems = [
     { name: "Dashboard", icon: Home, href: "/CreatorDashboard", active: true },
@@ -140,11 +143,16 @@ export default function CreatorDashboard() {
             </Button>
             <div className="flex items-center gap-3">
               <div className="hidden md:block text-right">
-                <p className="text-sm font-medium text-gray-900">John Doe</p>
+                <p className="text-sm font-medium text-gray-900">{creatorInfo.name}</p>
                 <p className="text-xs text-gray-500">Course Creator</p>
               </div>
               <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
-                JD
+                {creatorInfo.name
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .toUpperCase()
+                  .slice(0, 2)}
               </div>
             </div>
           </div>
@@ -221,7 +229,14 @@ export default function CreatorDashboard() {
         <main className="flex-1 p-4 lg:p-8">
           {/* Stats Grid */}
           <div className="mb-8">
-            <StatisticsCards stats={stats} />
+            {statsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                <span className="ml-3 text-gray-500">Loading dashboard stats…</span>
+              </div>
+            ) : (
+              <StatisticsCards stats={stats} />
+            )}
           </div>
 
           {/* Advanced Revenue Chart */}
