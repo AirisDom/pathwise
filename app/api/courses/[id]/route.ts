@@ -51,8 +51,10 @@ export const GET = withErrorHandler(
               select: {
                 id: true,
                 title: true,
+                description: true,
                 type: true,
                 order: true,
+                videoUrl: true,
                 videoDuration: true,
                 isFree: true,
                 isPreview: true,
@@ -72,11 +74,16 @@ export const GET = withErrorHandler(
       throw new NotFoundError("Course not found");
     }
 
-    // Increment view count
-    await db.course.update({
-      where: { id: course.id },
-      data: { viewCount: { increment: 1 } },
-    });
+    // Only increment view count if the viewer is NOT the course creator
+    const currentUser = await getCurrentUser();
+    const isCreator = currentUser?.id === course.creatorId;
+
+    if (!isCreator) {
+      await db.course.update({
+        where: { id: course.id },
+        data: { viewCount: { increment: 1 } },
+      });
+    }
 
     return successResponse(course);
   }

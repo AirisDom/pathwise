@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import FeaturesDetail from "@/components/ui/features-detail";
 import StatisticsCards from "@/components/ui/statistics-cards";
 import RevenueChart from "@/components/ui/revenue-chart";
+import type { RevenueDataPoint, RevenueSummary } from "@/components/ui/revenue-chart";
 import StudentGrowthChart from "@/components/ui/student-growth-chart";
 import CourseEngagementChart from "@/components/ui/course-engagement-chart";
 import {
@@ -60,6 +61,9 @@ export default function CreatorDashboard() {
   ]);
   const [creatorInfo, setCreatorInfo] = useState<{ name: string; image: string | null }>({ name: "Creator", image: null });
   const [statsLoading, setStatsLoading] = useState(true);
+  const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
+  const [revenueSummary, setRevenueSummary] = useState<RevenueSummary | undefined>(undefined);
+  const [revenueLoading, setRevenueLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
@@ -77,8 +81,24 @@ export default function CreatorDashboard() {
       }
     }
 
+    async function fetchRevenue() {
+      try {
+        const res = await fetch("/api/creator/revenue");
+        if (res.ok) {
+          const data = await res.json();
+          setRevenueData(data.chartData);
+          setRevenueSummary(data.summary);
+        }
+      } catch (err) {
+        console.error("Failed to load revenue data:", err);
+      } finally {
+        setRevenueLoading(false);
+      }
+    }
+
     if (status === "authenticated") {
       fetchStats();
+      fetchRevenue();
     }
   }, [status]);
 
@@ -241,7 +261,11 @@ export default function CreatorDashboard() {
 
           {/* Advanced Revenue Chart */}
           <div className="mb-8">
-            <RevenueChart />
+            <RevenueChart
+              data={revenueData}
+              summary={revenueSummary}
+              loading={revenueLoading}
+            />
           </div>
 
           {/* Area Charts - Student Growth & Course Engagement */}
