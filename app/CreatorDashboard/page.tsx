@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import FeaturesDetail from "@/components/ui/features-detail";
 import StatisticsCards from "@/components/ui/statistics-cards";
 import RevenueChart from "@/components/ui/revenue-chart";
-import type { RevenueDataPoint, RevenueSummary } from "@/components/ui/revenue-chart";
+import type { RevenueDataPoint, RevenueSummary, ViewsSummary } from "@/components/ui/revenue-chart";
 import StudentGrowthChart from "@/components/ui/student-growth-chart";
 import CourseEngagementChart from "@/components/ui/course-engagement-chart";
 import {
@@ -64,6 +64,9 @@ export default function CreatorDashboard() {
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [revenueSummary, setRevenueSummary] = useState<RevenueSummary | undefined>(undefined);
   const [revenueLoading, setRevenueLoading] = useState(true);
+  const [viewsData, setViewsData] = useState<RevenueDataPoint[]>([]);
+  const [viewsSummary, setViewsSummary] = useState<ViewsSummary | undefined>(undefined);
+  const [viewsLoading, setViewsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchStats() {
@@ -96,9 +99,25 @@ export default function CreatorDashboard() {
       }
     }
 
+    async function fetchViews() {
+      try {
+        const res = await fetch("/api/creator/views");
+        if (res.ok) {
+          const data = await res.json();
+          setViewsData(data.chartData);
+          setViewsSummary(data.summary);
+        }
+      } catch (err) {
+        console.error("Failed to load views data:", err);
+      } finally {
+        setViewsLoading(false);
+      }
+    }
+
     if (status === "authenticated") {
       fetchStats();
       fetchRevenue();
+      fetchViews();
     }
   }, [status]);
 
@@ -264,7 +283,10 @@ export default function CreatorDashboard() {
             <RevenueChart
               data={revenueData}
               summary={revenueSummary}
+              viewsData={viewsData}
+              viewsSummary={viewsSummary}
               loading={revenueLoading}
+              viewsLoading={viewsLoading}
             />
           </div>
 

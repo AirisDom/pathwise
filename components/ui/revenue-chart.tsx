@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/line-charts-9';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Users, Eye } from 'lucide-react';
 import { CartesianGrid, ComposedChart, Line, XAxis, YAxis } from 'recharts';
 
 // ── Types ──
@@ -21,10 +21,22 @@ export interface RevenueSummary {
   low: { value: number; date: string };
 }
 
+export interface ViewsSummary {
+  totalViews: number;
+  monthlyViews: number;
+  todaysViews: number;
+  dailyChange: number;
+  high: { value: number; date: string };
+  low: { value: number; date: string };
+}
+
 interface RevenueChartProps {
   data?: RevenueDataPoint[];
   summary?: RevenueSummary;
+  viewsData?: RevenueDataPoint[];
+  viewsSummary?: ViewsSummary;
   loading?: boolean;
+  viewsLoading?: boolean;
 }
 
 // Chart configuration
@@ -32,6 +44,13 @@ const chartConfig = {
   value: {
     label: 'Enrollments',
     color: 'rgb(37, 99, 235)', // Blue-600
+  },
+} satisfies ChartConfig;
+
+const viewsChartConfig = {
+  value: {
+    label: 'Views',
+    color: 'rgb(16, 185, 129)', // Emerald-500
   },
 } satisfies ChartConfig;
 
@@ -62,9 +81,10 @@ const defaultSummary: RevenueSummary = {
 interface TooltipProps {
   active?: boolean;
   payload?: Array<{ payload: RevenueDataPoint }>;
+  unitLabel?: string;
 }
 
-const CustomTooltip = ({ active, payload }: TooltipProps) => {
+const CustomTooltip = ({ active, payload, unitLabel = 'enrollment' }: TooltipProps) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
@@ -72,7 +92,7 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
         <div className="text-sm text-gray-500 mb-1">{data.date}</div>
         <div className="flex items-center gap-2">
           <div className="text-base font-bold">
-            {data.value} enrollment{data.value !== 1 ? 's' : ''}
+            {data.value} {unitLabel}{data.value !== 1 ? 's' : ''}
           </div>
         </div>
       </div>
@@ -81,9 +101,37 @@ const CustomTooltip = ({ active, payload }: TooltipProps) => {
   return null;
 };
 
-export default function RevenueChart({ data, summary, loading }: RevenueChartProps) {
-  const chartData = data && data.length > 0 ? data : buildEmptyData();
-  const s = summary ?? defaultSummary;
+export default function RevenueChart({ data, summary, viewsData, viewsSummary, loading, viewsLoading }: RevenueChartProps) {
+  const [activeTab, setActiveTab] = useState<'enrollments' | 'views'>('enrollments');
+
+  const isViewsTab = activeTab === 'views';
+  const currentLoading = isViewsTab ? (viewsLoading ?? loading) : loading;
+  const rawData = isViewsTab ? viewsData : data;
+  const chartData = rawData && rawData.length > 0 ? rawData : buildEmptyData();
+  const config = isViewsTab ? viewsChartConfig : chartConfig;
+
+  // Build summary values based on active tab
+  const s = isViewsTab
+    ? (viewsSummary
+      ? {
+          total: viewsSummary.monthlyViews,
+          today: viewsSummary.todaysViews,
+          dailyChange: viewsSummary.dailyChange,
+          high: viewsSummary.high,
+          low: viewsSummary.low,
+        }
+      : { total: 0, today: 0, dailyChange: 0, high: { value: 0, date: '' }, low: { value: 0, date: '' } })
+    : (summary
+      ? {
+          total: summary.monthlyRevenue,
+          today: summary.todaysRevenue,
+          dailyChange: summary.dailyChange,
+          high: summary.high,
+          low: summary.low,
+        }
+      : { total: 0, today: 0, dailyChange: 0, high: { value: 0, date: '' }, low: { value: 0, date: '' } });
+
+  const unitLabel = isViewsTab ? 'view' : 'enrolment';
 
   const hasAnyData = chartData.some((d) => d.value > 0);
   const maxY = hasAnyData ? Math.max(...chartData.map((d) => d.value)) + 1 : 5;
@@ -101,12 +149,40 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
   return (
     <Card className="w-full border-0 shadow-lg">
       <CardContent className="flex flex-col items-stretch gap-5 p-6">
+        {/* Tabs */}
+        <div className="flex items-center gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+          <button
+            onClick={() => setActiveTab('enrollments')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'enrollments'
+                ? 'bg-white text-blue-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Users className="w-4 h-4" />
+            Enrollments
+          </button>
+          <button
+            onClick={() => setActiveTab('views')}
+            className={`inline-flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              activeTab === 'views'
+                ? 'bg-white text-emerald-600 shadow-sm'
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
+          >
+            <Eye className="w-4 h-4" />
+            Views
+          </button>
+        </div>
+
         {/* Header */}
         <div className="mb-3">
-          <h1 className="text-base text-gray-600 font-medium mb-1">Revenue Overview</h1>
+          <h1 className="text-base text-gray-600 font-medium mb-1">
+            {isViewsTab ? 'Views Overview' : 'Revenue Overview'}
+          </h1>
           <div className="flex flex-wrap items-baseline gap-1.5 sm:gap-3.5">
             <span className="text-4xl font-bold">
-              {s.monthlyRevenue} enrolment{s.monthlyRevenue !== 1 ? 's' : ''}
+              {s.total} {unitLabel}{s.total !== 1 ? 's' : ''}
             </span>
             <div className={`flex items-center gap-1 ${changeColor}`}>
               <ChangeIcon className="w-4 h-4" />
@@ -122,12 +198,12 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
         <div className="grow">
           {/* Stats Row */}
           <div className="flex items-center justify-between flex-wrap gap-2.5 text-sm mb-2.5">
-            {/* Today's enrollments */}
+            {/* Today */}
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
                 <span className="text-gray-600">Today:</span>
                 <span className="font-semibold">
-                  {s.todaysRevenue} enrolment{s.todaysRevenue !== 1 ? 's' : ''}
+                  {s.today} {unitLabel}{s.today !== 1 ? 's' : ''}
                 </span>
                 <div className={`flex items-center gap-1 ${changeColor}`}>
                   <ChangeIcon className="w-3 h-3" />
@@ -143,7 +219,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
             <div className="flex items-center gap-6 text-gray-600">
               <span>
                 High:{' '}
-                <span className="text-blue-600 font-medium">
+                <span className={`font-medium ${isViewsTab ? 'text-emerald-600' : 'text-blue-600'}`}>
                   {s.high.value}
                   {s.high.date ? ` (${s.high.date})` : ''}
                 </span>
@@ -172,7 +248,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
             </div>
           ) : (
             <ChartContainer
-              config={chartConfig}
+              config={config}
               className="h-96 w-full [&_.recharts-curve.recharts-tooltip-cursor]:stroke-initial"
             >
               <ComposedChart
@@ -181,8 +257,8 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
               >
                 <defs>
                   <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={chartConfig.value.color} stopOpacity={0.1} />
-                    <stop offset="100%" stopColor={chartConfig.value.color} stopOpacity={0} />
+                    <stop offset="0%" stopColor={config.value.color} stopOpacity={0.1} />
+                    <stop offset="100%" stopColor={config.value.color} stopOpacity={0} />
                   </linearGradient>
                   <filter id="dotShadow" x="-50%" y="-50%" width="200%" height="200%">
                     <feDropShadow dx="2" dy="3" stdDeviation="3" floodColor="rgba(0,0,0,0.8)" />
@@ -192,7 +268,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                       dx="4"
                       dy="6"
                       stdDeviation="25"
-                      floodColor="rgba(59, 130, 246, 0.9)"
+                      floodColor={isViewsTab ? 'rgba(16, 185, 129, 0.9)' : 'rgba(59, 130, 246, 0.9)'}
                     />
                   </filter>
                 </defs>
@@ -209,7 +285,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                   dataKey="date"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: chartConfig.value.color }}
+                  tick={{ fontSize: 12, fill: config.value.color }}
                   tickMargin={15}
                   interval={4}
                 />
@@ -217,14 +293,14 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fontSize: 12, fill: chartConfig.value.color }}
+                  tick={{ fontSize: 12, fill: config.value.color }}
                   tickMargin={15}
                   domain={[0, maxY]}
                   allowDecimals={false}
                 />
 
                 <ChartTooltip
-                  content={<CustomTooltip />}
+                  content={<CustomTooltip unitLabel={unitLabel} />}
                   cursor={{
                     strokeDasharray: '3 3',
                     stroke: 'rgb(107, 114, 128)',
@@ -236,7 +312,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                   <Line
                     type="monotone"
                     dataKey="value"
-                    stroke={chartConfig.value.color}
+                    stroke={config.value.color}
                     strokeWidth={2}
                     filter="url(#lineShadow)"
                     dot={(props) => {
@@ -249,7 +325,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                             cx={cx}
                             cy={cy}
                             r={6}
-                            fill={chartConfig.value.color}
+                            fill={config.value.color}
                             stroke="white"
                             strokeWidth={2}
                             filter="url(#dotShadow)"
@@ -260,7 +336,7 @@ export default function RevenueChart({ data, summary, loading }: RevenueChartPro
                     }}
                     activeDot={{
                       r: 6,
-                      fill: chartConfig.value.color,
+                      fill: config.value.color,
                       stroke: 'white',
                       strokeWidth: 2,
                       filter: 'url(#dotShadow)',

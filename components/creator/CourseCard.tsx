@@ -144,7 +144,7 @@ export default function CourseCard({ course, onDelete }: CourseCardProps) {
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center gap-5 flex-wrap">
+          <div className="grid grid-cols-5 gap-4">
             <StatBlock label="Views" value={formatNumber(course.viewCount)} icon={<Eye className="w-3.5 h-3.5" />} />
             <StatBlock label="Students" value={formatNumber(course.enrollmentCount)} icon={<Users className="w-3.5 h-3.5" />} />
             <StatBlock

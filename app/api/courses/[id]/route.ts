@@ -79,9 +79,31 @@ export const GET = withErrorHandler(
     const isCreator = currentUser?.id === course.creatorId;
 
     if (!isCreator) {
+      // Increment the total view counter on the course
       await db.course.update({
         where: { id: course.id },
         data: { viewCount: { increment: 1 } },
+      });
+
+      // Upsert today's CourseAnalytics row so the views graph has data
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      await db.courseAnalytics.upsert({
+        where: {
+          courseId_date: {
+            courseId: course.id,
+            date: today,
+          },
+        },
+        update: {
+          views: { increment: 1 },
+        },
+        create: {
+          courseId: course.id,
+          date: today,
+          views: 1,
+        },
       });
     }
 

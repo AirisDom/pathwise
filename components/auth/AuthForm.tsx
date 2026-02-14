@@ -148,7 +148,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       if (session?.user?.role === "CREATOR" || session?.user?.role === "ADMIN") {
         router.push("/CreatorDashboard");
       } else {
-        router.push("/");
+        router.push("/StudentDashboard");
       }
       router.refresh();
     } catch {
@@ -244,7 +244,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       if (session?.user?.role === "CREATOR" || session?.user?.role === "ADMIN") {
         router.push("/CreatorDashboard");
       } else {
-        router.push("/");
+        router.push("/StudentDashboard");
       }
       router.refresh();
     } catch {
