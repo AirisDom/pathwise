@@ -1,9 +1,6 @@
-import Anthropic from "@anthropic-ai/sdk";
 import { auth } from "@/lib/auth";
 
-const client = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
-});
+const OLLAMA_URL = "http://localhost:11434/api/chat";
 
 export async function POST(req: Request) {
   // Auth check
@@ -33,7 +30,6 @@ export async function POST(req: Request) {
     return Response.json({ error: "Messages are required" }, { status: 400 });
   }
 
-  // Validate messages have correct roles
   const validMessages = messages.filter(
     (m) => m.role === "user" || m.role === "assistant"
   );
@@ -54,40 +50,61 @@ Your personality and guidelines:
 - Use markdown formatting where helpful: bullet points for lists, \`code blocks\` for code, **bold** for emphasis
 - After answering, sometimes ask a follow-up like "Does that make sense?" or "Would you like me to go deeper on any part?"
 - Celebrate curiosity and effort — if a student asks a good question, acknowledge it
-- If you're not sure about something specific to the course content, be honest about it
+- If you're not sure about something, be honest about it
 - Keep your responses focused and practical — students want to learn, not read essays
 - If a student seems stuck or frustrated, offer encouragement and a different angle
 
 Stay focused on helping students learn effectively. You're their study companion for this course.`;
 
   try {
-    // Use the streaming API with async generator pattern
-    const anthropicStream = await client.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: validMessages.map((m) => ({
-        role: m.role,
-        content: m.content,
-      })),
-      stream: true,
+    const ollamaRes = await fetch(OLLAMA_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "llama3.2",
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...validMessages,
+        ],
+        stream: true,
+      }),
     });
 
+    if (!ollamaRes.ok || !ollamaRes.body) {
+      throw new Error(`Ollama returned ${ollamaRes.status}`);
+    }
+
     const encoder = new TextEncoder();
+    const decoder = new TextDecoder();
+    const upstream = ollamaRes.body;
+
     const readable = new ReadableStream({
       async start(controller) {
+        const reader = upstream.getReader();
+        let buffer = "";
         try {
-          for await (const chunk of anthropicStream) {
-            if (
-              chunk.type === "content_block_delta" &&
-              chunk.delta.type === "text_delta"
-            ) {
-              controller.enqueue(encoder.encode(chunk.delta.text));
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() ?? "";
+            for (const line of lines) {
+              if (!line.trim()) continue;
+              try {
+                const json = JSON.parse(line);
+                const text = json?.message?.content;
+                if (text) controller.enqueue(encoder.encode(text));
+              } catch {
+                // skip malformed lines
+              }
             }
           }
           controller.close();
         } catch (err) {
           controller.error(err);
+        } finally {
+          reader.releaseLock();
         }
       },
     });
@@ -101,21 +118,14 @@ Stay focused on helping students learn effectively. You're their study companion
     });
   } catch (err: unknown) {
     console.error("[LUMI_CHAT_ERROR]", err);
-    // Give meaningful errors back to the client
     const message =
       err && typeof err === "object" && "message" in err
         ? String((err as { message: unknown }).message)
         : "Unknown error";
 
-    if (message.includes("credit balance is too low")) {
+    if (message.includes("ECONNREFUSED") || message.includes("fetch failed")) {
       return Response.json(
-        { error: "Lumi is out of credits. Please top up the Anthropic account to continue." },
-        { status: 503 }
-      );
-    }
-    if (message.includes("invalid_api_key") || message.includes("401")) {
-      return Response.json(
-        { error: "Lumi API key is invalid. Please check the ANTHROPIC_API_KEY in .env." },
+        { error: "Lumi is offline. Make sure Ollama is running (`brew services start ollama`)." },
         { status: 503 }
       );
     }

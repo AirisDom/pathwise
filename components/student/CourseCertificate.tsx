@@ -1,12 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import {
-  Award,
-  Download,
-  GraduationCap,
-  X,
-} from "lucide-react";
+import { X, Download } from "lucide-react";
 
 interface CertificateProps {
   studentName: string;
@@ -25,102 +20,181 @@ export default function CourseCertificate({
 }: CertificateProps) {
   const certRef = useRef<HTMLDivElement>(null);
 
-  return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/80 p-4">
-      <div className="relative w-full max-w-3xl">
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute -top-12 right-0 p-2 text-gray-400 hover:text-white transition-colors"
-        >
-          <X className="w-6 h-6" />
-        </button>
+  const handlePrint = () => {
+    const printContent = certRef.current;
+    if (!printContent) return;
+    const win = window.open("", "_blank");
+    if (!win) return;
+    const html = `<!DOCTYPE html>
+<html>
+  <head>
+    <title>Certificate — ${courseName}</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600&display=swap');
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body { width: 297mm; height: 210mm; background: white; }
+      body { display: flex; align-items: center; justify-content: center; }
+      @page { size: A4 landscape; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div style="width:297mm;height:210mm;position:relative;">${printContent.innerHTML}</div>
+    <script>window.onload = function(){ window.print(); window.close(); };<\/script>
+  </body>
+</html>`;
+    win.document.open();
+    win.document.write(html);
+    win.document.close();
+  };
 
-        {/* Certificate */}
+  return (
+    <div className="fixed inset-0 z-100 flex items-center justify-center bg-black/90 p-4">
+      {/* Close */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/10 transition-colors z-10"
+      >
+        <X className="w-5 h-5" />
+      </button>
+
+      <div className="w-full max-w-4xl flex flex-col items-center gap-5">
+        {/* ── Certificate ── */}
         <div
           ref={certRef}
-          className="bg-white rounded-2xl overflow-hidden shadow-2xl"
+          className="w-full bg-white shadow-2xl"
+          style={{ aspectRatio: "297/210", maxHeight: "75vh", position: "relative", overflow: "hidden" }}
         >
-          {/* Top accent */}
-          <div className="h-2 bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500" />
+          {/* Blue side accent */}
+          <div style={{
+            position: "absolute", left: 0, top: 0, bottom: 0, width: 10,
+            background: "linear-gradient(to bottom, #1d4ed8, #3b82f6, #60a5fa)",
+          }} />
 
-          <div className="p-8 sm:p-12 text-center">
-            {/* Logo / Icon */}
-            <div className="flex items-center justify-center gap-2 mb-6">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
-                <GraduationCap className="w-6 h-6 text-emerald-600" />
+          {/* Decorative bg watermark */}
+          <svg style={{ position: "absolute", right: -40, bottom: -40, opacity: 0.03, width: 320, height: 320 }} viewBox="0 0 200 200" fill="none">
+            <circle cx="100" cy="100" r="95" stroke="#1d4ed8" strokeWidth="6" />
+            <circle cx="100" cy="100" r="75" stroke="#1d4ed8" strokeWidth="4" />
+            <circle cx="100" cy="100" r="55" stroke="#1d4ed8" strokeWidth="3" />
+            <circle cx="100" cy="100" r="35" stroke="#1d4ed8" strokeWidth="2" />
+          </svg>
+
+          {/* Top blue bar */}
+          <div style={{
+            position: "absolute", top: 0, left: 10, right: 0, height: 5,
+            background: "linear-gradient(to right, #1d4ed8, #3b82f6, #818cf8)",
+          }} />
+
+          {/* Bottom blue bar */}
+          <div style={{
+            position: "absolute", bottom: 0, left: 10, right: 0, height: 5,
+            background: "linear-gradient(to right, #1d4ed8, #3b82f6, #818cf8)",
+          }} />
+
+          {/* Content */}
+          <div style={{
+            position: "absolute", inset: 0, left: 10,
+            display: "flex", flexDirection: "column",
+            alignItems: "center", justifyContent: "center",
+            padding: "32px 56px",
+            textAlign: "center",
+          }}>
+            {/* PathWise wordmark */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 20 }}>
+              <div style={{
+                width: 32, height: 32, borderRadius: 8,
+                background: "linear-gradient(135deg, #1d4ed8, #3b82f6)",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>
+                {/* Book icon inline */}
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                  <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                </svg>
               </div>
-              <span className="text-xl font-bold text-gray-900 tracking-tight">
+              <span style={{ fontSize: 22, fontWeight: 700, color: "#111827", letterSpacing: "-0.3px", fontFamily: "Inter, sans-serif" }}>
                 PathWise
               </span>
             </div>
 
-            {/* Decorative border */}
-            <div className="border-2 border-gray-200 rounded-xl p-6 sm:p-10 relative">
-              {/* Corner ornaments */}
-              <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-emerald-400 rounded-tl-lg" />
-              <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-emerald-400 rounded-tr-lg" />
-              <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-emerald-400 rounded-bl-lg" />
-              <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-emerald-400 rounded-br-lg" />
+            {/* Certificate label */}
+            <p style={{
+              fontSize: 10, letterSpacing: "0.3em", textTransform: "uppercase",
+              color: "#6b7280", fontWeight: 600, marginBottom: 16,
+              fontFamily: "Inter, sans-serif",
+            }}>
+              Certificate of Completion
+            </p>
 
-              <p className="text-xs uppercase tracking-[0.3em] text-gray-400 font-semibold mb-2">
-                Certificate of Completion
-              </p>
+            {/* Divider */}
+            <div style={{ width: 60, height: 2, background: "linear-gradient(to right, #1d4ed8, #818cf8)", borderRadius: 2, marginBottom: 20 }} />
 
-              <div className="my-6">
-                <Award className="w-14 h-14 text-emerald-500 mx-auto" />
+            {/* "This is to certify" */}
+            <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 8, fontFamily: "Inter, sans-serif" }}>
+              This is to certify that
+            </p>
+
+            {/* Student name */}
+            <h2 style={{
+              fontSize: 36, fontWeight: 700, color: "#111827", lineHeight: 1.15,
+              marginBottom: 16, fontFamily: "'Playfair Display', Georgia, serif",
+              letterSpacing: "-0.5px",
+            }}>
+              {studentName}
+            </h2>
+
+            <p style={{ fontSize: 13, color: "#9ca3af", marginBottom: 8, fontFamily: "Inter, sans-serif" }}>
+              has successfully completed
+            </p>
+
+            {/* Course name */}
+            <h3 style={{
+              fontSize: 18, fontWeight: 600, color: "#1d4ed8", marginBottom: 24,
+              maxWidth: 480, lineHeight: 1.3, fontFamily: "Inter, sans-serif",
+            }}>
+              {courseName}
+            </h3>
+
+            {/* Separator dots */}
+            <div style={{ display: "flex", gap: 6, marginBottom: 24 }}>
+              {[0,1,2].map((i) => (
+                <div key={i} style={{ width: 5, height: 5, borderRadius: "50%", background: i === 1 ? "#3b82f6" : "#dbeafe" }} />
+              ))}
+            </div>
+
+            {/* Instructor + Date */}
+            <div style={{ display: "flex", alignItems: "center", gap: 32 }}>
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontSize: 10, color: "#9ca3af", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "Inter, sans-serif" }}>Instructor</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{creatorName}</p>
+                <div style={{ height: 1, background: "#e5e7eb", marginTop: 6 }} />
               </div>
-
-              <p className="text-sm text-gray-500 mb-1">
-                This is to certify that
-              </p>
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-serif">
-                {studentName}
-              </h2>
-
-              <p className="text-sm text-gray-500 mb-1">
-                has successfully completed the course
-              </p>
-              <h3 className="text-xl sm:text-2xl font-semibold text-emerald-700 mb-6">
-                {courseName}
-              </h3>
-
-              <div className="flex items-center justify-center gap-8 text-sm text-gray-500">
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Instructor</p>
-                  <p className="font-medium text-gray-700">{creatorName}</p>
-                </div>
-                <div className="w-px h-8 bg-gray-200" />
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Date</p>
-                  <p className="font-medium text-gray-700">{completedDate}</p>
-                </div>
+              <div style={{ width: 1, height: 32, background: "#e5e7eb" }} />
+              <div style={{ textAlign: "center" }}>
+                <p style={{ fontSize: 10, color: "#9ca3af", marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.1em", fontFamily: "Inter, sans-serif" }}>Completed</p>
+                <p style={{ fontSize: 14, fontWeight: 600, color: "#374151", fontFamily: "Inter, sans-serif" }}>{completedDate}</p>
+                <div style={{ height: 1, background: "#e5e7eb", marginTop: 6 }} />
               </div>
             </div>
 
-            {/* Footer */}
-            <p className="text-[10px] text-gray-400 mt-6">
-              This certificate verifies that the student completed all course
-              lessons on the PathWise platform.
+            {/* Fine print */}
+            <p style={{ fontSize: 9, color: "#d1d5db", marginTop: 20, fontFamily: "Inter, sans-serif" }}>
+              Issued by PathWise · This certificate verifies completion of all course lessons.
             </p>
           </div>
-
-          {/* Bottom accent */}
-          <div className="h-2 bg-linear-to-r from-emerald-500 via-teal-500 to-cyan-500" />
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-center gap-3 mt-4">
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => window.print()}
-            className="flex items-center gap-2 px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-colors"
+            onClick={handlePrint}
+            className="flex items-center gap-2 px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-semibold transition-colors shadow-lg shadow-blue-900/30"
           >
             <Download className="w-4 h-4" />
-            Print / Save as PDF
+            Download PDF
           </button>
           <button
             onClick={onClose}
-            className="px-5 py-2.5 text-gray-400 hover:text-white text-sm transition-colors"
+            className="px-5 py-2.5 text-gray-400 hover:text-white text-sm font-medium transition-colors"
           >
             Close
           </button>
