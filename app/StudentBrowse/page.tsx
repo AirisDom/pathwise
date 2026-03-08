@@ -349,7 +349,7 @@ function StudentBrowseContent() {
 
                     {/* Enroll button */}
                     {isEnrolled ? (
-                      <Link href={`/courses/${course.slug}`}>
+                      <Link href={`/courses/${course.slug}/learn`}>
                         <Button className="w-full bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200" size="sm">
                           <Zap className="w-3.5 h-3.5 mr-1.5" />
                           Continue Learning
@@ -449,7 +449,7 @@ function StudentBrowseContent() {
                       </div>
 
                       {isEnrolled ? (
-                        <Link href={`/courses/${course.slug}`}>
+                        <Link href={`/courses/${course.slug}/learn`}>
                           <Button size="sm" className="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200">
                             Continue
                           </Button>

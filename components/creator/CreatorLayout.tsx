@@ -6,27 +6,27 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
-  BarChart3,
+  ChartBar,
   BookOpen,
-  BookMarked,
+  BookBookmark,
   Bell,
-  Calendar,
-  ChevronDown,
-  ChevronRight,
-  DollarSign,
-  Award,
+  CalendarBlank,
+  CaretDown,
+  CaretRight,
+  CurrencyDollar,
+  Medal,
   FileText,
   FolderOpen,
-  Home,
-  LogOut,
-  Menu,
-  MessageSquare,
-  Settings,
-  Upload,
+  House,
+  SignOut,
+  List,
+  Chat,
+  Gear,
+  UploadSimple,
   Users,
   Video,
   X,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 interface CreatorLayoutProps {
   children: React.ReactNode;
@@ -51,23 +51,23 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
 
   const courseSubItems = [
     { name: "All Courses", icon: FolderOpen, href: "/CreatorCourses/all" },
-    { name: "Create New", icon: Upload, href: "/CreatorCourses/create" },
+    { name: "Create New", icon: UploadSimple, href: "/CreatorCourses/create" },
     { name: "Drafts", icon: FileText, href: "/CreatorCourses/drafts" },
-    { name: "Published", icon: BookMarked, href: "/CreatorCourses/published" },
+    { name: "Published", icon: BookBookmark, href: "/CreatorCourses/published" },
   ];
 
   const navigationItems = [
-    { name: "Dashboard", icon: Home, href: "/CreatorDashboard" },
-    { name: "Analytics", icon: BarChart3, href: "/CreatorAnalytics" },
+    { name: "Dashboard", icon: House, href: "/CreatorDashboard" },
+    { name: "Analytics", icon: ChartBar, href: "/CreatorAnalytics" },
     { name: "Courses", icon: BookOpen, href: "#", expandable: true, subItems: courseSubItems },
     { name: "Content Studio", icon: Video, href: "/CreatorStudio" },
     { name: "Students", icon: Users, href: "/CreatorStudents" },
-    { name: "Reviews & Ratings", icon: Award, href: "/CreatorReviews" },
-    { name: "Messages", icon: MessageSquare, href: "/CreatorMessages" },
-    { name: "Revenue", icon: DollarSign, href: "/CreatorRevenue" },
-    { name: "Calendar", icon: Calendar, href: "/CreatorCalendar" },
+    { name: "Reviews & Ratings", icon: Medal, href: "/CreatorReviews" },
+    { name: "Messages", icon: Chat, href: "/CreatorMessages" },
+    { name: "Revenue", icon: CurrencyDollar, href: "/CreatorRevenue" },
+    { name: "CalendarBlank", icon: CalendarBlank, href: "/CreatorCalendar" },
     { name: "Notifications", icon: Bell, href: "/CreatorNotifications" },
-    { name: "Settings", icon: Settings, href: "/CreatorSettings" },
+    { name: "Gear", icon: Gear, href: "/CreatorSettings" },
   ];
 
   function isActive(href: string) {
@@ -85,7 +85,7 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden text-gray-600 hover:text-gray-900"
             >
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarOpen ? <X className="w-6 h-6" /> : <List className="w-6 h-6" />}
             </button>
             <Link href="/" className="flex items-center">
               <img src="/images/logo.png" alt="PathWise" className="h-8 w-auto object-contain" />
@@ -94,7 +94,7 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
           <div className="flex items-center gap-4">
             <Button asChild variant="outline" size="sm" className="hidden sm:flex">
               <Link href="/CreatorDashboard">
-                <Home className="w-4 h-4 mr-2" />
+                <House className="w-4 h-4 mr-2" />
                 Dashboard
               </Link>
             </Button>
@@ -135,7 +135,7 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
                         <item.icon className="w-5 h-5" />
                         <span className="font-medium">{item.name}</span>
                       </div>
-                      {coursesExpanded ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+                      {coursesExpanded ? <CaretDown className="w-4 h-4" /> : <CaretRight className="w-4 h-4" />}
                     </button>
                     {coursesExpanded && item.subItems && (
                       <div className="ml-4 mt-1 space-y-1">
@@ -171,7 +171,7 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
             ))}
             <div className="pt-4 mt-4 border-t border-gray-200">
               <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full transition-colors">
-                <LogOut className="w-5 h-5" />
+                <SignOut className="w-5 h-5" />
                 <span className="font-medium">Logout</span>
               </button>
             </div>

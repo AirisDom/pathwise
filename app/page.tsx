@@ -1,5 +1,6 @@
 import { HeroSection } from "@/components/sections/HeroSectionNew";
 import FeaturedCourses from "@/components/sections/FeaturedCourses";
+import DynamicFeaturedCourses from "@/components/sections/DynamicFeaturedCourses";
 import GoalSelection from "@/components/sections/GoalSelection";
 import { Footer2 } from "@/components/ui/footer2";
 
@@ -63,6 +64,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <HeroSection />
+      <DynamicFeaturedCourses />
       <div id="courses">
         <FeaturedCourses />
       </div>

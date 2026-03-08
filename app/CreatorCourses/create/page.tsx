@@ -170,6 +170,8 @@ export default function CreateCoursePage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(courseData),
         });
+        // Also save sections for existing course
+        await saveSections(courseId);
       } else {
         // Create new draft
         const res = await fetch("/api/courses", {
@@ -248,23 +250,79 @@ export default function CreateCoursePage() {
   }
 
   async function saveSections(cId: string) {
+    // First, fetch existing sections so we don't duplicate
+    let existingSections: { id: string; title: string; lessons: { id: string; title: string }[] }[] = [];
+    try {
+      const existingRes = await fetch(`/api/courses/${cId}/sections`);
+      if (existingRes.ok) {
+        const existingJson = await existingRes.json();
+        existingSections = existingJson.data ?? [];
+      }
+    } catch {
+      // Continue anyway
+    }
+
+    const existingSectionIds = new Set(existingSections.map((s) => s.id));
+
     for (const section of sections) {
       if (!section.title) continue;
       try {
-        const sRes = await fetch(`/api/courses/${cId}/sections`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            title: section.title,
-            description: section.description || undefined,
-          }),
-        });
-        if (sRes.ok) {
-          const sJson = await sRes.json();
-          const sectionId = sJson.data?.id;
-          if (sectionId) {
-            for (const lesson of section.lessons) {
-              if (!lesson.title) continue;
+        let sectionId = section.id;
+
+        // If this section already exists in DB, update it
+        if (sectionId && existingSectionIds.has(sectionId)) {
+          await fetch(`/api/courses/${cId}/sections/${sectionId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: section.title,
+              description: section.description || undefined,
+            }),
+          });
+        } else {
+          // Create new section
+          const sRes = await fetch(`/api/courses/${cId}/sections`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              title: section.title,
+              description: section.description || undefined,
+            }),
+          });
+          if (sRes.ok) {
+            const sJson = await sRes.json();
+            sectionId = sJson.data?.id;
+          }
+        }
+
+        if (sectionId) {
+          // Get existing lessons in this section
+          const existingSection = existingSections.find((s) => s.id === sectionId);
+          const existingLessonIds = new Set(
+            (existingSection?.lessons ?? []).map((l) => l.id)
+          );
+
+          for (const lesson of section.lessons) {
+            if (!lesson.title) continue;
+
+            if (lesson.id && existingLessonIds.has(lesson.id)) {
+              // Update existing lesson
+              await fetch(
+                `/api/courses/${cId}/sections/${sectionId}/lessons/${lesson.id}`,
+                {
+                  method: "PUT",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    title: lesson.title,
+                    description: lesson.description || undefined,
+                    type: lesson.type,
+                    videoUrl: lesson.videoUrl || undefined,
+                    isFree: lesson.isFree,
+                  }),
+                }
+              );
+            } else {
+              // Create new lesson
               await fetch(
                 `/api/courses/${cId}/sections/${sectionId}/lessons`,
                 {
@@ -303,6 +361,8 @@ export default function CreateCoursePage() {
       return;
     }
     setErrors({});
+    // Force save regardless of hasUnsavedChanges
+    hasUnsavedChanges.current = true;
     await autoSave();
     showToast("Draft saved successfully");
   }
@@ -340,12 +400,21 @@ export default function CreateCoursePage() {
           cId = json.data?.id;
           if (cId) {
             setCourseId(cId);
-            await saveSections(cId);
           }
         }
+      } else {
+        // Update existing course metadata
+        await fetch(`/api/courses/${cId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(buildCoursePayload()),
+        });
       }
 
       if (cId) {
+        // Always save sections before publishing
+        await saveSections(cId);
+
         // Publish
         await fetch(`/api/courses/${cId}`, {
           method: "PATCH",

@@ -7,12 +7,12 @@ import {
   Star,
   PlayCircle,
   Clock,
-  MoreVertical,
+  DotsThreeVertical,
   Pencil,
-  Trash2,
+  Trash,
   Globe,
   FileText,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 export interface CourseCardData {
   id: string;
@@ -173,7 +173,7 @@ export default function CourseCard({ course, onDelete }: CourseCardProps) {
                 onClick={() => onDelete(course.id)}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash className="w-3.5 h-3.5" />
                 Delete
               </button>
             )}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, Loader2, CheckCircle, AlertCircle, Image as ImageIcon, Video, FileText } from "lucide-react";
+import { UploadSimple, X, CircleNotch, CheckCircle, Warning, Image as ImageIcon, Video, FileText } from "@phosphor-icons/react";
 
 interface FileUploadProps {
   /** "image" or "video" */
@@ -77,7 +77,7 @@ export default function FileUpload({
               if (json.success && json.data?.url) {
                 resolve(json.data.url);
               } else {
-                reject(new Error(json.error?.message || "Upload failed"));
+                reject(new Error(json.error?.message || "UploadSimple failed"));
               }
             } catch {
               reject(new Error("Invalid server response"));
@@ -85,15 +85,15 @@ export default function FileUpload({
           } else {
             try {
               const json = JSON.parse(xhr.responseText);
-              reject(new Error(json.error?.message || `Upload failed (${xhr.status})`));
+              reject(new Error(json.error?.message || `UploadSimple failed (${xhr.status})`));
             } catch {
-              reject(new Error(`Upload failed (${xhr.status})`));
+              reject(new Error(`UploadSimple failed (${xhr.status})`));
             }
           }
         });
 
         xhr.addEventListener("error", () => reject(new Error("Network error")));
-        xhr.addEventListener("abort", () => reject(new Error("Upload cancelled")));
+        xhr.addEventListener("abort", () => reject(new Error("UploadSimple cancelled")));
 
         xhr.open("POST", "/api/upload");
         xhr.send(formData);
@@ -106,7 +106,7 @@ export default function FileUpload({
       // Reset status after a moment
       setTimeout(() => setStatus("idle"), 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Upload failed");
+      setError(err instanceof Error ? err.message : "UploadSimple failed");
       setStatus("error");
     }
   }, [type, maxSize, maxSizeBytes, onChange]);
@@ -246,7 +246,7 @@ export default function FileUpload({
           /* Uploading state */
           <div className="flex flex-col items-center gap-3 w-full max-w-xs">
             <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-              <Loader2 className="w-6 h-6 text-blue-600 animate-spin" />
+              <CircleNotch className="w-6 h-6 text-blue-600 animate-spin" />
             </div>
             <div className="text-center">
               <p className="text-sm font-medium text-gray-900">Uploading…</p>
@@ -276,7 +276,7 @@ export default function FileUpload({
               status === "error" ? "bg-red-100" : "bg-gray-100"
             }`}>
               {status === "error" ? (
-                <AlertCircle className="w-6 h-6 text-red-500" />
+                <Warning className="w-6 h-6 text-red-500" />
               ) : (
                 <Icon className="w-6 h-6 text-gray-400" />
               )}
@@ -284,7 +284,7 @@ export default function FileUpload({
 
             <div className="text-center">
               <p className="text-sm font-medium text-gray-700">
-                {status === "error" ? "Upload failed" : (
+                {status === "error" ? "UploadSimple failed" : (
                   <>
                     <span className="text-blue-600">Click to upload</span>
                     {" "}or drag and drop

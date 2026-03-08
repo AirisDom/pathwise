@@ -17,7 +17,7 @@ import {
   Gridline,
   ChartDataTypes, 
 } from 'reaviz';
-import { TrendingUp, TrendingDown, AlertTriangle, Clock, Users } from 'lucide-react';
+import { TrendUp, TrendDown, Warning, Clock, Users } from '@phosphor-icons/react';
 
 interface ChartDataPoint {
   key: Date;
@@ -31,13 +31,13 @@ interface ChartSeries {
 
 const UpTrendIcon: React.FC<{ baseColor: string; strokeColor: string; className?: string }> = ({ baseColor, strokeColor, className }) => (
   <div className={`w-7 h-7 rounded-full flex items-center justify-center ${className}`} style={{ backgroundColor: baseColor }}>
-    <TrendingUp className="w-4 h-4" style={{ color: strokeColor }} />
+    <TrendUp className="w-4 h-4" style={{ color: strokeColor }} />
   </div>
 );
 
 const DownTrendIcon: React.FC<{ baseColor: string; strokeColor: string; className?: string }> = ({ baseColor, strokeColor, className }) => (
   <div className={`w-7 h-7 rounded-full flex items-center justify-center ${className}`} style={{ backgroundColor: baseColor }}>
-    <TrendingDown className="w-4 h-4" style={{ color: strokeColor }} />
+    <TrendDown className="w-4 h-4" style={{ color: strokeColor }} />
   </div>
 );
 

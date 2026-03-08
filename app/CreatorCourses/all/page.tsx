@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import CreatorLayout from "@/components/creator/CreatorLayout";
 import CourseCard, { type CourseCardData } from "@/components/creator/CourseCard";
-import { Loader2, Search, Plus } from "lucide-react";
+import { CircleNotch, MagnifyingGlass, Plus } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function AllCoursesPage() {
@@ -71,13 +71,13 @@ export default function AllCoursesPage() {
           </Link>
         </div>
 
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <form onSubmit={handleSearch} className="mb-6">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search courses..."
+              placeholder="MagnifyingGlass courses..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -88,13 +88,13 @@ export default function AllCoursesPage() {
         {/* Courses List */}
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <CircleNotch className="w-8 h-8 animate-spin text-blue-600" />
             <span className="ml-3 text-gray-500">Loading courses…</span>
           </div>
         ) : courses.length === 0 ? (
           <div className="text-center py-20">
             <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mx-auto mb-4">
-              <Search className="w-8 h-8 text-gray-400" />
+              <MagnifyingGlass className="w-8 h-8 text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-1">No courses yet</h3>
             <p className="text-gray-500 mb-6">Create your first course to get started.</p>

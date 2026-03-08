@@ -144,7 +144,7 @@ export async function POST(req: Request) {
         success: false,
         error: {
           code: "INTERNAL_ERROR",
-          message: "Upload failed. Please try again.",
+          message: "UploadSimple failed. Please try again.",
         },
       },
       { status: 500 }

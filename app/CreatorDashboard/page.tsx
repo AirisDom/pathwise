@@ -12,32 +12,32 @@ import type { RevenueDataPoint, RevenueSummary, ViewsSummary } from "@/component
 import StudentGrowthChart from "@/components/ui/student-growth-chart";
 import CourseEngagementChart from "@/components/ui/course-engagement-chart";
 import {
-  BarChart3,
+  ChartBar,
   BookOpen,
-  ChevronDown,
-  ChevronRight,
-  DollarSign,
+  CaretDown,
+  CaretRight,
+  CurrencyDollar,
   Eye,
   FileText,
   FolderOpen,
   GraduationCap,
-  Home,
-  LogOut,
-  MessageSquare,
-  Menu,
+  House,
+  SignOut,
+  Chat,
+  List,
   PlayCircle,
-  Settings,
-  TrendingUp,
+  Gear,
+  TrendUp,
   Users,
   Video,
   X,
   Bell,
-  Calendar,
-  Award,
-  BookMarked,
-  Upload,
-  Loader2,
-} from "lucide-react";
+  CalendarBlank,
+  Medal,
+  BookBookmark,
+  UploadSimple,
+  CircleNotch,
+} from "@phosphor-icons/react";
 
 interface StatData {
   title: string;
@@ -122,8 +122,8 @@ export default function CreatorDashboard() {
   }, [status]);
 
   const navigationItems = [
-    { name: "Dashboard", icon: Home, href: "/CreatorDashboard", active: true },
-    { name: "Analytics", icon: BarChart3, href: "/CreatorAnalytics", active: false },
+    { name: "Dashboard", icon: House, href: "/CreatorDashboard", active: true },
+    { name: "Analytics", icon: ChartBar, href: "/CreatorAnalytics", active: false },
     { 
       name: "Courses", 
       icon: BookOpen, 
@@ -132,19 +132,19 @@ export default function CreatorDashboard() {
       expandable: true,
       subItems: [
         { name: "All Courses", icon: FolderOpen, href: "/CreatorCourses/all" },
-        { name: "Create New", icon: Upload, href: "/CreatorCourses/create" },
+        { name: "Create New", icon: UploadSimple, href: "/CreatorCourses/create" },
         { name: "Drafts", icon: FileText, href: "/CreatorCourses/drafts" },
-        { name: "Published", icon: BookMarked, href: "/CreatorCourses/published" },
+        { name: "Published", icon: BookBookmark, href: "/CreatorCourses/published" },
       ]
     },
     { name: "Content Studio", icon: Video, href: "/CreatorStudio", active: false },
     { name: "Students", icon: Users, href: "/CreatorStudents", active: false },
-    { name: "Reviews & Ratings", icon: Award, href: "/CreatorReviews", active: false },
-    { name: "Messages", icon: MessageSquare, href: "/CreatorMessages", active: false },
-    { name: "Revenue", icon: DollarSign, href: "/CreatorRevenue", active: false },
-    { name: "Calendar", icon: Calendar, href: "/CreatorCalendar", active: false },
+    { name: "Reviews & Ratings", icon: Medal, href: "/CreatorReviews", active: false },
+    { name: "Messages", icon: Chat, href: "/CreatorMessages", active: false },
+    { name: "Revenue", icon: CurrencyDollar, href: "/CreatorRevenue", active: false },
+    { name: "CalendarBlank", icon: CalendarBlank, href: "/CreatorCalendar", active: false },
     { name: "Notifications", icon: Bell, href: "/CreatorNotifications", active: false },
-    { name: "Settings", icon: Settings, href: "/CreatorSettings", active: false },
+    { name: "Gear", icon: Gear, href: "/CreatorSettings", active: false },
   ];
 
   return (
@@ -157,7 +157,7 @@ export default function CreatorDashboard() {
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="lg:hidden text-gray-600 hover:text-gray-900"
             >
-              {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {sidebarOpen ? <X className="w-6 h-6" /> : <List className="w-6 h-6" />}
             </button>
             <Link href="/" className="flex items-center">
               <img
@@ -176,8 +176,8 @@ export default function CreatorDashboard() {
               className="hidden sm:flex"
             >
               <Link href="/">
-                <Home className="w-4 h-4 mr-2" />
-                Back to Home
+                <House className="w-4 h-4 mr-2" />
+                Back to House
               </Link>
             </Button>
             <div className="flex items-center gap-3">
@@ -219,9 +219,9 @@ export default function CreatorDashboard() {
                         <span className="font-medium">{item.name}</span>
                       </div>
                       {coursesExpanded ? (
-                        <ChevronDown className="w-4 h-4" />
+                        <CaretDown className="w-4 h-4" />
                       ) : (
-                        <ChevronRight className="w-4 h-4" />
+                        <CaretRight className="w-4 h-4" />
                       )}
                     </button>
                     {coursesExpanded && item.subItems && (
@@ -257,7 +257,7 @@ export default function CreatorDashboard() {
 
             <div className="pt-4 mt-4 border-t border-gray-200">
               <button className="flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 w-full transition-colors">
-                <LogOut className="w-5 h-5" />
+                <SignOut className="w-5 h-5" />
                 <span className="font-medium">Logout</span>
               </button>
             </div>
@@ -270,7 +270,7 @@ export default function CreatorDashboard() {
           <div className="mb-8">
             {statsLoading ? (
               <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                <CircleNotch className="w-8 h-8 animate-spin text-blue-600" />
                 <span className="ml-3 text-gray-500">Loading dashboard stats…</span>
               </div>
             ) : (

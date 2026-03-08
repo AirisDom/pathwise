@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui/card";
-import { Rocket, RefreshCw, TrendingUp, Lightbulb } from "lucide-react";
+import { Rocket, ArrowsClockwise, TrendUp, Lightbulb } from "@phosphor-icons/react";
 import { useState } from "react";
 
 const goals = [
@@ -13,13 +13,13 @@ const goals = [
   },
   {
     id: 2,
-    icon: RefreshCw,
+    icon: ArrowsClockwise,
     label: "Change my career",
     color: "bg-blue-600",
   },
   {
     id: 3,
-    icon: TrendingUp,
+    icon: TrendUp,
     label: "Grow in my current role",
     color: "bg-blue-600",
   },

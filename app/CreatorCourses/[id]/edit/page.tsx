@@ -23,6 +23,7 @@ import {
   Star,
   Globe,
   FileText,
+  Layers,
 } from "lucide-react";
 import Link from "next/link";
 import FileUpload from "@/components/creator/FileUpload";
@@ -372,17 +373,41 @@ export default function EditCoursePage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        {/* ── Seasons & Episodes (read-only view for now) ── */}
-        {course.sections && course.sections.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Seasons & Episodes</h2>
+        {/* ── Seasons & Episodes ── */}
+        <div className="bg-white border border-gray-200 rounded-xl p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Seasons & Episodes</h2>
+            <Link
+              href={`/creator/courses/${id}/edit`}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              Manage Content
+            </Link>
+          </div>
+          {course.sections && course.sections.length > 0 ? (
             <div className="space-y-3">
               {course.sections.map((section, sIdx) => (
                 <SectionBlock key={section.id} section={section} index={sIdx} />
               ))}
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="text-center py-8 border-2 border-dashed border-gray-200 rounded-lg">
+              <Layers className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium mb-1">No content yet</p>
+              <p className="text-sm text-gray-400 mb-4">
+                Add seasons and episodes to start building your course
+              </p>
+              <Link
+                href={`/creator/courses/${id}/edit`}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                Add Content
+              </Link>
+            </div>
+          )}
+        </div>
 
         {/* Bottom actions */}
         <div className="flex items-center justify-end gap-3 py-6 border-t border-gray-200">

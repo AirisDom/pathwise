@@ -2,7 +2,7 @@
 
 import { Badge } from '@/components/ui/badge-2';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card-enhanced';
-import { ArrowDown, ArrowUp } from 'lucide-react';
+import { ArrowDown, ArrowUp } from '@phosphor-icons/react';
 
 interface StatCardProps {
   title: string;

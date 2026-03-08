@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import CreatorLayout from "@/components/creator/CreatorLayout";
 import CourseCard, { type CourseCardData } from "@/components/creator/CourseCard";
-import { Loader2, FileText, Plus } from "lucide-react";
+import { CircleNotch, FileText, Plus } from "@phosphor-icons/react";
 import Link from "next/link";
 
 export default function DraftsPage() {
@@ -65,7 +65,7 @@ export default function DraftsPage() {
 
         {loading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+            <CircleNotch className="w-8 h-8 animate-spin text-blue-600" />
             <span className="ml-3 text-gray-500">Loading drafts…</span>
           </div>
         ) : courses.length === 0 ? (

@@ -39,6 +39,7 @@ model User {
   receivedMessages Message[]          @relation("ReceivedMessages")
   notifications    Notification[]
   creatorProfile   CreatorProfile?
+  notes            Note[]
 
   @@map("users")
 }
@@ -195,6 +196,7 @@ model Lesson {
   updatedAt      DateTime   @updatedAt
 
   progress       LessonProgress[]
+  notes          Note[]
 
   @@index([sectionId])
   @@map("lessons")
@@ -406,6 +408,31 @@ model CourseAnalytics {
   @@index([courseId])
   @@index([date])
   @@map("course_analytics")
+}
+
+// ==========================================
+// 8.5 STUDENT NOTES
+// ==========================================
+
+model Note {
+  id        String   @id @default(cuid())
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  content   String   @db.Text
+  timestamp Int?     // Video timestamp in seconds
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([lessonId])
+  @@unique([userId, lessonId, timestamp])
+  @@map("notes")
 }
 
 // ==========================================

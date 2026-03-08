@@ -7,24 +7,24 @@ import StudentLayout from "@/components/student/StudentLayout";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
-  CheckCircle2,
-  ChevronRight,
+  CheckCircle,
+  CaretRight,
   Clock,
   Compass,
   Flame,
   GraduationCap,
-  Loader2,
+  CircleNotch,
   PlayCircle,
   Star,
   Target,
   Trophy,
-  TrendingUp,
+  TrendUp,
   Users,
-  Zap,
+  Lightning,
   ArrowRight,
-  BarChart3,
-  Sparkles,
-} from "lucide-react";
+  ChartBar,
+  Sparkle,
+} from "@phosphor-icons/react";
 
 interface RecentCourse {
   enrollmentId: string;
@@ -107,7 +107,7 @@ export default function StudentDashboard() {
       <StudentLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500 mx-auto mb-3" />
+            <CircleNotch className="w-8 h-8 animate-spin text-emerald-500 mx-auto mb-3" />
             <p className="text-gray-500 text-sm">Loading your dashboard...</p>
           </div>
         </div>
@@ -171,8 +171,8 @@ export default function StudentDashboard() {
             <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
               {[
                 { label: "Enrolled", value: stats.totalEnrolled, icon: BookOpen },
-                { label: "In Progress", value: stats.inProgress, icon: TrendingUp },
-                { label: "Completed", value: stats.completed, icon: CheckCircle2 },
+                { label: "In Progress", value: stats.inProgress, icon: TrendUp },
+                { label: "Completed", value: stats.completed, icon: CheckCircle },
                 { label: "Lessons Done", value: stats.totalLessonsCompleted, icon: Target },
               ].map((item) => (
                 <div
@@ -212,7 +212,7 @@ export default function StudentDashboard() {
               {data.recentCourses.map((course) => (
                 <Link
                   key={course.enrollmentId}
-                  href={`/courses/${course.slug}`}
+                  href={`/courses/${course.slug}/learn`}
                   className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-emerald-200 transition-all duration-300"
                 >
                   {/* Thumbnail */}
@@ -292,7 +292,7 @@ export default function StudentDashboard() {
             <div className="flex items-center justify-between mb-5">
               <div>
                 <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-amber-500" />
+                  <Sparkle className="w-5 h-5 text-amber-500" />
                   Recommended for You
                 </h2>
                 <p className="text-sm text-gray-500 mt-0.5">Courses you might enjoy</p>
@@ -309,7 +309,7 @@ export default function StudentDashboard() {
               {data.recommended.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/courses/${course.slug}`}
+                  href={`/courses/${course.slug}/learn`}
                   className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-emerald-200 transition-all duration-300"
                 >
                   <div className="relative aspect-video bg-gray-100 overflow-hidden">
@@ -413,7 +413,7 @@ export default function StudentDashboard() {
               <div className="bg-white rounded-xl border border-gray-200 p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-emerald-50 flex items-center justify-center">
-                    <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
                   </div>
                   <span className="text-sm text-gray-500">Completed</span>
                 </div>

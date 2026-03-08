@@ -3,7 +3,7 @@ import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Menu, X } from 'lucide-react'
+import { List, X } from '@phosphor-icons/react'
 import { useScroll, motion } from 'motion/react'
 import { BackgroundPaths } from '@/components/ui/background-paths'
 
@@ -24,10 +24,10 @@ export function HeroSection() {
 }
 
 const menuItems = [
-    { name: 'Courses', href: '#courses' },
-    { name: 'For Business', href: '#business' },
-    { name: 'About', href: '#about' },
-    { name: 'Pricing', href: '#pricing' },
+    { name: 'Courses', href: '/courses' },
+    { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Teach on PathWise', href: '/teach' },
+    { name: 'About', href: '/about' },
 ]
 
 const HeroHeader = () => {
@@ -67,10 +67,10 @@ const HeroHeader = () => {
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
-                                aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
+                                aria-label={menuState == true ? 'Close List' : 'Open List'}
                                 className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
-                                <Menu className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
-                                <X className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
+                                <List weight="regular" className="group-data-[state=active]:rotate-180 group-data-[state=active]:scale-0 group-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
+                                <X weight="regular" className="group-data-[state=active]:rotate-0 group-data-[state=active]:scale-100 group-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
                             </button>
 
                             <div className="hidden lg:block">

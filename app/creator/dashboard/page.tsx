@@ -1,1 +1,12 @@
-export default function Page() { return <div>dashboard — Coming soon</div>; }
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+
+export default function CreatorDashboardRedirect() {
+  const router = useRouter();
+  useEffect(() => {
+    router.replace("/CreatorDashboard");
+  }, [router]);
+  return null;
+}

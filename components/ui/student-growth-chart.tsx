@@ -2,7 +2,7 @@
 
 import React from 'react';
 import AreaChartCard from './area-chart-1';
-import { Users, Clock, TrendingUp } from 'lucide-react';
+import { Users, Clock, TrendUp } from '@phosphor-icons/react';
 
 const now = new Date();
 const generateDate = (offsetDays: number): Date => {
@@ -13,7 +13,7 @@ const generateDate = (offsetDays: number): Date => {
 
 const UpTrendIcon: React.FC<{ baseColor: string; strokeColor: string; className?: string }> = ({ baseColor, strokeColor, className }) => (
   <div className={`w-7 h-7 rounded-full flex items-center justify-center ${className}`} style={{ backgroundColor: baseColor }}>
-    <TrendingUp className="w-4 h-4" style={{ color: strokeColor }} />
+    <TrendUp className="w-4 h-4" style={{ color: strokeColor }} />
   </div>
 );
 
@@ -79,7 +79,7 @@ const StudentGrowthChart: React.FC = () => {
     },
     {
       id: 'new-enrollments',
-      Icon: TrendingUp,
+      Icon: TrendUp,
       label: 'New Enrollments',
       tooltip: 'New students this month',
       value: '+195',

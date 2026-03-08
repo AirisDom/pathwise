@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ChartConfig, ChartContainer, ChartTooltip } from '@/components/ui/line-charts-9';
-import { TrendingUp, TrendingDown, Minus, Users, Eye } from 'lucide-react';
+import { TrendUp, TrendDown, Minus, Users, Eye } from '@phosphor-icons/react';
 import { CartesianGrid, ComposedChart, Line, XAxis, YAxis } from 'recharts';
 
 // ── Types ──
@@ -138,7 +138,7 @@ export default function RevenueChart({ data, summary, viewsData, viewsSummary, l
 
   // Daily change icon
   const ChangeIcon =
-    s.dailyChange > 0 ? TrendingUp : s.dailyChange < 0 ? TrendingDown : Minus;
+    s.dailyChange > 0 ? TrendUp : s.dailyChange < 0 ? TrendDown : Minus;
   const changeColor =
     s.dailyChange > 0
       ? 'text-emerald-600'

@@ -4,20 +4,20 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import StudentLayout from "@/components/student/StudentLayout";
 import {
-  BarChart3,
+  ChartBar,
   BookOpen,
-  Calendar,
-  CheckCircle2,
+  CalendarBlank,
+  CheckCircle,
   Clock,
   Flame,
   GraduationCap,
-  Loader2,
+  CircleNotch,
   Star,
   Target,
   Trophy,
-  TrendingUp,
-  Zap,
-} from "lucide-react";
+  TrendUp,
+  Lightning,
+} from "@phosphor-icons/react";
 
 interface ProgressData {
   stats: {
@@ -66,7 +66,7 @@ export default function StudentProgress() {
     return (
       <StudentLayout>
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+          <CircleNotch className="w-8 h-8 animate-spin text-emerald-500" />
         </div>
       </StudentLayout>
     );
@@ -109,8 +109,8 @@ export default function StudentProgress() {
         <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
           {[
             { label: "Total Courses", value: stats.totalEnrolled, icon: BookOpen, color: "blue" },
-            { label: "In Progress", value: stats.inProgress, icon: TrendingUp, color: "amber" },
-            { label: "Completed", value: stats.completed, icon: CheckCircle2, color: "emerald" },
+            { label: "In Progress", value: stats.inProgress, icon: TrendUp, color: "amber" },
+            { label: "Completed", value: stats.completed, icon: CheckCircle, color: "emerald" },
             { label: "Lessons Done", value: stats.totalLessonsCompleted, icon: Target, color: "purple" },
             { label: "Hours Learned", value: stats.totalHoursLearned, icon: Clock, color: "cyan" },
             { label: "Day Streak", value: stats.currentStreak, icon: Flame, color: "orange" },
@@ -255,7 +255,7 @@ export default function StudentProgress() {
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { name: "First Steps", desc: "Enroll in your first course", icon: Zap, earned: stats.totalEnrolled > 0 },
+              { name: "First Steps", desc: "Enroll in your first course", icon: Lightning, earned: stats.totalEnrolled > 0 },
               { name: "Dedicated", desc: "Complete 5 lessons", icon: Target, earned: stats.totalLessonsCompleted >= 5 },
               { name: "Achiever", desc: "Complete your first course", icon: Trophy, earned: stats.completed > 0 },
               { name: "Scholar", desc: "Enroll in 3 courses", icon: GraduationCap, earned: stats.totalEnrolled >= 3 },

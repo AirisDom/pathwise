@@ -1,3 +1,3 @@
 export default function CreatorCalendarPage() {
-  return <div>Calendar — Coming soon</div>;
+  return <div>CalendarBlank — Coming soon</div>;
 }

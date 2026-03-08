@@ -7,18 +7,18 @@ import StudentLayout from "@/components/student/StudentLayout";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
-  CheckCircle2,
+  CheckCircle,
   Clock,
   Compass,
-  Filter,
+  Faders,
   GraduationCap,
-  Loader2,
+  CircleNotch,
   PlayCircle,
-  Search,
+  MagnifyingGlass,
   Trophy,
-  TrendingUp,
+  TrendUp,
   X,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 
 interface StudentCourse {
   enrollmentId: string;
@@ -79,8 +79,8 @@ export default function StudentCourses() {
 
   const filterTabs: { key: FilterType; label: string; icon: React.ElementType }[] = [
     { key: "all", label: "All Courses", icon: BookOpen },
-    { key: "in-progress", label: "In Progress", icon: TrendingUp },
-    { key: "completed", label: "Completed", icon: CheckCircle2 },
+    { key: "in-progress", label: "In Progress", icon: TrendUp },
+    { key: "completed", label: "Completed", icon: CheckCircle },
   ];
 
   const formatDate = (dateStr: string | null) => {
@@ -111,7 +111,7 @@ export default function StudentCourses() {
           </Button>
         </div>
 
-        {/* Filter Tabs */}
+        {/* Faders Tabs */}
         <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 w-fit mb-6">
           {filterTabs.map((tab) => (
             <button
@@ -129,15 +129,15 @@ export default function StudentCourses() {
           ))}
         </div>
 
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <form onSubmit={handleSearch} className="mb-6">
           <div className="relative max-w-md">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search your courses..."
+              placeholder="MagnifyingGlass your courses..."
               className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400"
             />
           </div>
@@ -146,7 +146,7 @@ export default function StudentCourses() {
         {/* Loading */}
         {loading && (
           <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+            <CircleNotch className="w-8 h-8 animate-spin text-emerald-500" />
           </div>
         )}
 
@@ -156,7 +156,7 @@ export default function StudentCourses() {
             {courses.map((course) => (
               <Link
                 key={course.enrollmentId}
-                href={`/courses/${course.slug}`}
+                href={`/courses/${course.slug}/learn`}
                 className="group bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-emerald-200 transition-all duration-300 flex flex-col"
               >
                 {/* Thumbnail */}
@@ -219,7 +219,7 @@ export default function StudentCourses() {
                     {course.isCompleted ? (
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <CheckCircle className="w-3.5 h-3.5" />
                           Completed {formatDate(course.completedAt)}
                         </span>
                         <span className="text-xs text-gray-400">
@@ -264,7 +264,7 @@ export default function StudentCourses() {
               {filter === "completed" ? (
                 <Trophy className="w-10 h-10 text-emerald-400" />
               ) : filter === "in-progress" ? (
-                <TrendingUp className="w-10 h-10 text-emerald-400" />
+                <TrendUp className="w-10 h-10 text-emerald-400" />
               ) : (
                 <GraduationCap className="w-10 h-10 text-emerald-400" />
               )}

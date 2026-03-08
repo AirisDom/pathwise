@@ -2,7 +2,7 @@
 
 import React from 'react';
 import AreaChartCard from './area-chart-1';
-import { Video, Eye, Star } from 'lucide-react';
+import { Video, Eye, Star } from '@phosphor-icons/react';
 
 const now = new Date();
 const generateDate = (offsetDays: number): Date => {

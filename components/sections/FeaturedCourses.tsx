@@ -2,7 +2,7 @@
 
 import { Timeline } from "@/components/ui/timeline";
 import { Card } from "@/components/ui/card";
-import { Star } from "lucide-react";
+import { Star } from "@phosphor-icons/react";
 import Image from "next/image";
 
 const coursesData = [
