@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  parent
+  family_friend
+}
+
+enum WorksheetType {
+  catch_check_change
+  opening_up
+  inner_rules
+}
+
+enum ResourceCategory {
+  info
+  podcast
+  service
+  coping_skill
+}
+
+enum ResourceAudience {
+  mothers
+  fathers
+  family
+  all
+}
+
+model User {
+  id            String   @id @default(uuid()) @db.Uuid
+  email         String   @unique @db.VarChar(255)
+  passwordHash  String   @map("password_hash") @db.VarChar(255)
+  name          String   @db.VarChar(100)
+  role          UserRole @default(parent)
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz()
+
+  worksheets       Worksheet[]
+  screeningResults ScreeningResult[]
+  posts            Post[]
+  refreshTokens    RefreshToken[]
+
+  @@map("users")
+}
+
+model Worksheet {
+  id        String        @id @default(uuid()) @db.Uuid
+  userId    String        @map("user_id") @db.Uuid
+  type      WorksheetType
+  title     String?       @db.VarChar(255)
+  responses Json          @db.JsonB
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime      @updatedAt @map("updated_at") @db.Timestamptz()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("worksheets")
+}
+
+model ScreeningResult {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  score       Int
+  responses   Json     @db.JsonB
+  completedAt DateTime @default(now()) @map("completed_at") @db.Timestamptz()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("screening_results")
+}
+
+model Post {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  title       String   @db.VarChar(255)
+  body        String   @db.Text
+  isAnonymous Boolean  @default(true) @map("is_anonymous")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("posts")
+}
+
+model Resource {
+  id          String           @id @default(uuid()) @db.Uuid
+  category    ResourceCategory
+  audience    ResourceAudience
+  title       String           @db.VarChar(255)
+  description String?          @db.Text
+  url         String?          @db.VarChar(500)
+  createdAt   DateTime         @default(now()) @map("created_at") @db.Timestamptz()
+
+  @@map("resources")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  tokenHash String   @map("token_hash") @db.VarChar(255)
+  expiresAt DateTime @map("expires_at") @db.Timestamptz()
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz()
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+  @@map("refresh_tokens")
+}
