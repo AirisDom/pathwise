@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Footer2 } from "@/components/ui/footer2";
+import SiteFooter from "@/components/layout/SiteFooter";
 import PublicNav from "@/components/layout/PublicNav";
 import {
   MagnifyingGlass,
@@ -463,7 +463,7 @@ export default function CoursesPage() {
       </div>
 
       {/* ── Footer ── */}
-      <Footer2 />
+      <SiteFooter />
     </div>
   );
 }

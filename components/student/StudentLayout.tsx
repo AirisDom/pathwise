@@ -60,9 +60,9 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
 
   const sideQuickLinks = [
     { name: "Favorites", icon: Heart, href: "/StudentFavorites" },
-    { name: "CalendarBlank", icon: CalendarBlank, href: "/StudentCalendar" },
+    { name: "Calendar", icon: CalendarBlank, href: "/StudentCalendar" },
     { name: "Messages", icon: Chat, href: "/StudentMessages" },
-    { name: "Gear", icon: Gear, href: "/StudentSettings" },
+    { name: "Settings", icon: Gear, href: "/StudentSettings" },
   ];
 
   function isActive(href: string) {
@@ -118,7 +118,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
               </nav>
             </div>
 
-            {/* Center: MagnifyingGlass */}
+            {/* Center: Search bar */}
             <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-lg mx-8">
               <div className="relative w-full">
                 <MagnifyingGlass className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -126,7 +126,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="MagnifyingGlass courses, topics, or skills..."
+                  placeholder="Search courses, topics, or skills..."
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-400 focus:bg-white transition-all"
                 />
               </div>
@@ -226,7 +226,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                         >
                           <Gear className="w-4 h-4" />
-                          Gear
+                          Settings
                         </Link>
                       </div>
 
@@ -255,7 +255,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
         <>
           <div className="fixed inset-0 bg-black/50 z-40 lg:hidden" onClick={() => setMobileMenuOpen(false)} />
           <div className="fixed top-16 left-0 bottom-0 w-72 bg-white z-50 lg:hidden shadow-xl overflow-y-auto">
-            {/* Mobile MagnifyingGlass */}
+            {/* Mobile Search */}
             <div className="p-4 border-b border-gray-100">
               <form onSubmit={handleSearch}>
                 <div className="relative">
@@ -264,7 +264,7 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    placeholder="MagnifyingGlass courses..."
+                    placeholder="Search courses..."
                     className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-200 bg-gray-50 text-sm"
                   />
                 </div>
