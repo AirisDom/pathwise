@@ -30,6 +30,7 @@ import {
   Flame,
   BookMarked,
   Info,
+  MessageCircle,
 } from "lucide-react";
 
 // ═══════════════════════════════════════════
@@ -611,6 +612,7 @@ export default function CourseLearnPage({ params }: { params: Promise<{ slug: st
           onClose={() => setShowCertificate(false)}
         />
       )}
+
     </div>
   );
 }
@@ -777,6 +779,9 @@ function CourseOverviewSection({ data }: { data: CourseData }) {
   const { course } = data;
   const creator = course.creator;
   const profile = creator.creatorProfile;
+  const [messageCreatorOpen, setMessageCreatorOpen] = useState(false);
+  const [creatorMessage, setCreatorMessage] = useState("");
+  const [messageSent, setMessageSent] = useState(false);
 
   return (
     <div className="px-6 lg:px-12 py-10 max-w-4xl mx-auto">
@@ -927,9 +932,79 @@ function CourseOverviewSection({ data }: { data: CourseData }) {
             <p className="text-sm text-gray-400 leading-relaxed">
               {profile?.bio ?? creator.bio ?? "Passionate educator committed to helping students learn and grow."}
             </p>
+
+            {/* Message Creator */}
+            <button
+              onClick={() => setMessageCreatorOpen(true)}
+              className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600/15 hover:bg-blue-600/25 text-blue-400 hover:text-blue-300 border border-blue-500/20 rounded-lg text-sm font-medium transition-colors"
+            >
+              <MessageCircle className="w-4 h-4" />
+              Message {creator.name?.split(" ")[0] || "Creator"}
+            </button>
           </div>
         </div>
       </section>
+
+      {/* Message Creator Modal */}
+      {messageCreatorOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-100 flex items-center justify-center p-4" onClick={() => setMessageCreatorOpen(false)}>
+          <div className="bg-gray-900 border border-gray-700 rounded-2xl w-full max-w-md p-6" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-white mb-1">Message {creator.name || "Creator"}</h3>
+            <p className="text-sm text-gray-400 mb-4">Send a private message about this course</p>
+            <textarea
+              value={creatorMessage}
+              onChange={(e) => setCreatorMessage(e.target.value)}
+              placeholder="Write your message here..."
+              rows={4}
+              className="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            />
+            <div className="flex justify-end gap-3 mt-4">
+              <button
+                onClick={() => setMessageCreatorOpen(false)}
+                className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={async () => {
+                  if (!creatorMessage.trim()) return;
+                  try {
+                    const res = await fetch("/api/messages", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({
+                        receiverId: creator.id,
+                        content: creatorMessage.trim(),
+                        subject: `Question about ${data?.course.title}`,
+                      }),
+                    });
+                    if (res.ok) {
+                      setCreatorMessage("");
+                      setMessageCreatorOpen(false);
+                      setMessageSent(true);
+                      setTimeout(() => setMessageSent(false), 3000);
+                    }
+                  } catch (err) {
+                    console.error("Failed to send message:", err);
+                  }
+                }}
+                disabled={!creatorMessage.trim()}
+                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Message sent toast */}
+      {messageSent && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-lg text-sm font-medium flex items-center gap-2">
+          <MessageCircle className="w-4 h-4" />
+          Message sent to {creator.name?.split(" ")[0] || "creator"}!
+        </div>
+      )}
 
     </div>
   );

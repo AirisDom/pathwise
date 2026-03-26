@@ -96,6 +96,19 @@ export const POST = withErrorHandler(async (req: Request) => {
       },
     });
 
+    // Notify creator when a student completes the course
+    if (courseCompleted && !enrollment.completedAt) {
+      await db.notification.create({
+        data: {
+          userId: course.creatorId,
+          type: "ACHIEVEMENT",
+          title: "Student Completed Course",
+          message: `${user.name || "A student"} completed "${course.title}"`,
+          link: "/CreatorStudents",
+        },
+      });
+    }
+
     return successResponse({
       progress,
       completedLessons: completedCount,

@@ -6,17 +6,15 @@ import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
-  ChartBar,
   BookOpen,
   BookBookmark,
   Bell,
-  CalendarBlank,
   CaretDown,
   CaretRight,
-  CurrencyDollar,
   Medal,
   FileText,
   FolderOpen,
+  GraduationCap,
   House,
   SignOut,
   List,
@@ -24,7 +22,6 @@ import {
   Gear,
   UploadSimple,
   Users,
-  Video,
   X,
 } from "@phosphor-icons/react";
 
@@ -58,16 +55,12 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
 
   const navigationItems = [
     { name: "Dashboard", icon: House, href: "/CreatorDashboard" },
-    { name: "Analytics", icon: ChartBar, href: "/CreatorAnalytics" },
     { name: "Courses", icon: BookOpen, href: "#", expandable: true, subItems: courseSubItems },
-    { name: "Content Studio", icon: Video, href: "/CreatorStudio" },
     { name: "Students", icon: Users, href: "/CreatorStudents" },
     { name: "Reviews & Ratings", icon: Medal, href: "/CreatorReviews" },
     { name: "Messages", icon: Chat, href: "/CreatorMessages" },
-    { name: "Revenue", icon: CurrencyDollar, href: "/CreatorRevenue" },
-    { name: "CalendarBlank", icon: CalendarBlank, href: "/CreatorCalendar" },
     { name: "Notifications", icon: Bell, href: "/CreatorNotifications" },
-    { name: "Gear", icon: Gear, href: "/CreatorSettings" },
+    { name: "Settings", icon: Gear, href: "/CreatorSettings" },
   ];
 
   function isActive(href: string) {
@@ -93,9 +86,9 @@ export default function CreatorLayout({ children, activeItem }: CreatorLayoutPro
           </div>
           <div className="flex items-center gap-4">
             <Button asChild variant="outline" size="sm" className="hidden sm:flex">
-              <Link href="/CreatorDashboard">
-                <House className="w-4 h-4 mr-2" />
-                Dashboard
+              <Link href="/StudentDashboard">
+                <GraduationCap className="w-4 h-4 mr-2" />
+                Student View
               </Link>
             </Button>
             <div className="flex items-center gap-3">

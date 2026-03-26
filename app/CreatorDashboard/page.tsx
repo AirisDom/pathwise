@@ -12,12 +12,9 @@ import type { RevenueDataPoint, RevenueSummary, ViewsSummary } from "@/component
 import StudentGrowthChart from "@/components/ui/student-growth-chart";
 import CourseEngagementChart from "@/components/ui/course-engagement-chart";
 import {
-  ChartBar,
   BookOpen,
   CaretDown,
   CaretRight,
-  CurrencyDollar,
-  Eye,
   FileText,
   FolderOpen,
   GraduationCap,
@@ -25,14 +22,10 @@ import {
   SignOut,
   Chat,
   List,
-  PlayCircle,
   Gear,
-  TrendUp,
   Users,
-  Video,
   X,
   Bell,
-  CalendarBlank,
   Medal,
   BookBookmark,
   UploadSimple,
@@ -67,6 +60,8 @@ export default function CreatorDashboard() {
   const [viewsData, setViewsData] = useState<RevenueDataPoint[]>([]);
   const [viewsSummary, setViewsSummary] = useState<ViewsSummary | undefined>(undefined);
   const [viewsLoading, setViewsLoading] = useState(true);
+  const [growthData, setGrowthData] = useState<any>(null);
+  const [engagementData, setEngagementData] = useState<any>(null);
 
   useEffect(() => {
     async function fetchStats() {
@@ -114,21 +109,46 @@ export default function CreatorDashboard() {
       }
     }
 
+    async function fetchGrowth() {
+      try {
+        const res = await fetch("/api/creator/student-growth");
+        if (res.ok) {
+          const data = await res.json();
+          setGrowthData(data);
+        }
+      } catch (err) {
+        console.error("Failed to load growth data:", err);
+      }
+    }
+
+    async function fetchEngagement() {
+      try {
+        const res = await fetch("/api/creator/engagement");
+        if (res.ok) {
+          const data = await res.json();
+          setEngagementData(data);
+        }
+      } catch (err) {
+        console.error("Failed to load engagement data:", err);
+      }
+    }
+
     if (status === "authenticated") {
       fetchStats();
       fetchRevenue();
       fetchViews();
+      fetchGrowth();
+      fetchEngagement();
     }
   }, [status]);
 
   const navigationItems = [
     { name: "Dashboard", icon: House, href: "/CreatorDashboard", active: true },
-    { name: "Analytics", icon: ChartBar, href: "/CreatorAnalytics", active: false },
-    { 
-      name: "Courses", 
-      icon: BookOpen, 
-      href: "#", 
-      active: false, 
+    {
+      name: "Courses",
+      icon: BookOpen,
+      href: "#",
+      active: false,
       expandable: true,
       subItems: [
         { name: "All Courses", icon: FolderOpen, href: "/CreatorCourses/all" },
@@ -137,14 +157,11 @@ export default function CreatorDashboard() {
         { name: "Published", icon: BookBookmark, href: "/CreatorCourses/published" },
       ]
     },
-    { name: "Content Studio", icon: Video, href: "/CreatorStudio", active: false },
     { name: "Students", icon: Users, href: "/CreatorStudents", active: false },
     { name: "Reviews & Ratings", icon: Medal, href: "/CreatorReviews", active: false },
     { name: "Messages", icon: Chat, href: "/CreatorMessages", active: false },
-    { name: "Revenue", icon: CurrencyDollar, href: "/CreatorRevenue", active: false },
-    { name: "CalendarBlank", icon: CalendarBlank, href: "/CreatorCalendar", active: false },
     { name: "Notifications", icon: Bell, href: "/CreatorNotifications", active: false },
-    { name: "Gear", icon: Gear, href: "/CreatorSettings", active: false },
+    { name: "Settings", icon: Gear, href: "/CreatorSettings", active: false },
   ];
 
   return (
@@ -175,9 +192,9 @@ export default function CreatorDashboard() {
               size="sm"
               className="hidden sm:flex"
             >
-              <Link href="/">
-                <House className="w-4 h-4 mr-2" />
-                Back to House
+              <Link href="/StudentDashboard">
+                <GraduationCap className="w-4 h-4 mr-2" />
+                Student View
               </Link>
             </Button>
             <div className="flex items-center gap-3">
@@ -292,8 +309,8 @@ export default function CreatorDashboard() {
 
           {/* Area Charts - Student Growth & Course Engagement */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <StudentGrowthChart />
-            <CourseEngagementChart />
+            <StudentGrowthChart apiData={growthData ?? undefined} />
+            <CourseEngagementChart apiData={engagementData ?? undefined} />
           </div>
 
           {/* Features Detail Section */}

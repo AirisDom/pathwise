@@ -58,6 +58,17 @@ export const POST = withErrorHandler(async (req: Request) => {
     data: { enrollmentCount: { increment: 1 } },
   });
 
+  // Notify the creator
+  await db.notification.create({
+    data: {
+      userId: course.creatorId,
+      type: "ENROLLMENT",
+      title: "New Student Enrolled",
+      message: `${user.name || "A student"} enrolled in "${course.title}"`,
+      link: "/CreatorStudents",
+    },
+  });
+
   // Upsert analytics
   const today = new Date();
   today.setHours(0, 0, 0, 0);

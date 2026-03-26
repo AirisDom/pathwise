@@ -10,6 +10,7 @@ import {
   Bell,
   CalendarBlank,
   CaretDown,
+  Chalkboard,
   Compass,
   Flame,
   GraduationCap,
@@ -133,6 +134,17 @@ export default function StudentLayout({ children }: StudentLayoutProps) {
 
             {/* Right: Actions + Profile */}
             <div className="flex items-center gap-3">
+              {/* Creator Dashboard button for CREATOR role */}
+              {session?.user?.role === "CREATOR" && (
+                <Link
+                  href="/CreatorDashboard"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-100 transition-colors"
+                >
+                  <Chalkboard className="w-4 h-4" />
+                  Creator
+                </Link>
+              )}
+
               {/* Streak Badge */}
               <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-50 text-orange-600 text-sm font-semibold">
                 <Flame className="w-4 h-4" />
