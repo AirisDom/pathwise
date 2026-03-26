@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import PublicNav from "@/components/layout/PublicNav";
-import { Footer2 } from "@/components/ui/footer2";
+import SiteFooter from "@/components/layout/SiteFooter";
 import {
   ArrowRight,
   BookOpen,
@@ -238,7 +238,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <Footer2 />
+      <SiteFooter />
     </div>
   );
 }

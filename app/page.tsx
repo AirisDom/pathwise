@@ -1,11 +1,11 @@
-import { HeroSection } from "@/components/sections/HeroSectionNew";
-import HomeStatsBar from "@/components/sections/HomeStatsBar";
-import HomeCategoryGrid from "@/components/sections/HomeCategoryGrid";
+import { HeroSection } from "@/components/sections/HeroSection";
+import HomeStatsBar from "@/components/sections/home/StatsBar";
+import HomeCategoryGrid from "@/components/sections/home/CategoryGrid";
 import DynamicFeaturedCourses from "@/components/sections/DynamicFeaturedCourses";
-import HomeLumiSection from "@/components/sections/HomeLumiSection";
-import HomeHowItWorks from "@/components/sections/HomeHowItWorks";
-import HomeTeachCTA from "@/components/sections/HomeTeachCTA";
-import HomeFooter from "@/components/sections/HomeFooter";
+import HomeLumiSection from "@/components/sections/home/LumiSection";
+import HomeHowItWorks from "@/components/sections/home/HowItWorks";
+import HomeTeachCTA from "@/components/sections/home/TeachCTA";
+import SiteFooter from "@/components/layout/SiteFooter";
 
 export default function Home() {
   return (
@@ -17,7 +17,7 @@ export default function Home() {
       <HomeLumiSection />
       <HomeHowItWorks />
       <HomeTeachCTA />
-      <HomeFooter />
+      <SiteFooter />
     </div>
   );
 }
