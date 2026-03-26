@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Footer2 } from "@/components/ui/footer2";
+import SiteFooter from "@/components/layout/SiteFooter";
 import PublicNav from "@/components/layout/PublicNav";
 import {
   ArrowRight,
@@ -274,7 +274,7 @@ export default function TeachPage() {
         </div>
       </section>
 
-      <Footer2 />
+      <SiteFooter />
     </div>
   );
 }
