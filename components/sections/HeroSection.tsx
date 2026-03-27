@@ -24,10 +24,8 @@ export function HeroSection() {
 }
 
 const menuItems = [
-    { name: 'Courses', href: '/courses' },
     { name: 'How It Works', href: '/how-it-works' },
     { name: 'Teach on PathWise', href: '/teach' },
-    { name: 'About', href: '/about' },
 ]
 
 const HeroHeader = () => {

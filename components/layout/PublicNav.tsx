@@ -6,10 +6,8 @@ import { usePathname } from "next/navigation";
 import { List, X } from "@phosphor-icons/react";
 
 const NAV_LINKS = [
-  { name: "Courses", href: "/courses" },
   { name: "How It Works", href: "/how-it-works" },
   { name: "Teach on PathWise", href: "/teach" },
-  { name: "About", href: "/about" },
 ];
 
 export default function PublicNav({ transparent = false }: { transparent?: boolean }) {

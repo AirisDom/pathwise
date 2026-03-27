@@ -1,24 +1,34 @@
-const steps = [
+"use client";
+
+import { Compass, Robot, Trophy } from "@phosphor-icons/react";
+import type { Icon } from "@phosphor-icons/react";
+
+const steps: {
+  number: string;
+  title: string;
+  description: string;
+  Icon: Icon;
+}[] = [
   {
     number: "01",
     title: "Find your perfect course",
     description:
       "Browse hundreds of courses across tech, business, design, and more. Filter by level, topic, or duration to find exactly what you need.",
-    icon: "🔍",
+    Icon: Compass,
   },
   {
     number: "02",
     title: "Learn with Lumi by your side",
     description:
       "Our AI assistant Lumi builds your personalised path, answers questions instantly, and keeps you on track — every step of the way.",
-    icon: "🤖",
+    Icon: Robot,
   },
   {
     number: "03",
     title: "Earn certificates & level up",
     description:
       "Complete courses to earn verified certificates you can share on LinkedIn and add to your CV. Your next opportunity starts here.",
-    icon: "🏆",
+    Icon: Trophy,
   },
 ];
 
@@ -44,9 +54,8 @@ export default function HomeHowItWorks() {
 
           {steps.map((step) => (
             <div key={step.number} className="relative z-10 flex flex-col items-center text-center">
-              {/* Number badge */}
-              <div className="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white font-bold text-lg shadow-lg mb-5">
-                {step.icon}
+              <div className="w-14 h-14 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-lg mb-5">
+                <step.Icon className="w-7 h-7" weight="fill" />
               </div>
               <span className="text-xs font-bold text-emerald-500 tracking-widest uppercase mb-2">
                 Step {step.number}

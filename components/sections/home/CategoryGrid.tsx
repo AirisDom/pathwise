@@ -1,61 +1,88 @@
-import Link from "next/link";
+"use client";
 
-const categories = [
+import {
+  Code,
+  Robot,
+  ChartLine,
+  PaintBrush,
+  ShieldCheck,
+  Cloud,
+  Megaphone,
+  Leaf,
+} from "@phosphor-icons/react";
+import type { Icon } from "@phosphor-icons/react";
+
+const categories: {
+  label: string;
+  Icon: Icon;
+  description: string;
+  color: string;
+  iconBg: string;
+  iconColor: string;
+}[] = [
   {
     label: "Web Development",
-    icon: "💻",
+    Icon: Code,
     description: "HTML, CSS, React, Node.js & more",
     color: "bg-blue-50 hover:bg-blue-100",
     iconBg: "bg-blue-100",
+    iconColor: "text-blue-600",
   },
   {
     label: "Data Science & AI",
-    icon: "🤖",
+    Icon: Robot,
     description: "Python, ML, Deep Learning, LLMs",
     color: "bg-violet-50 hover:bg-violet-100",
     iconBg: "bg-violet-100",
+    iconColor: "text-violet-600",
   },
   {
     label: "Business & Finance",
-    icon: "📊",
+    Icon: ChartLine,
     description: "Investing, accounting, strategy",
     color: "bg-emerald-50 hover:bg-emerald-100",
     iconBg: "bg-emerald-100",
+    iconColor: "text-emerald-600",
   },
   {
     label: "Design & UX",
-    icon: "🎨",
+    Icon: PaintBrush,
     description: "Figma, UI design, user research",
     color: "bg-pink-50 hover:bg-pink-100",
     iconBg: "bg-pink-100",
+    iconColor: "text-pink-600",
   },
   {
     label: "Cybersecurity",
-    icon: "🔒",
+    Icon: ShieldCheck,
     description: "Ethical hacking, networks, compliance",
     color: "bg-red-50 hover:bg-red-100",
     iconBg: "bg-red-100",
+    iconColor: "text-red-600",
   },
   {
     label: "Cloud Computing",
-    icon: "☁️",
+    Icon: Cloud,
     description: "AWS, Azure, GCP, DevOps",
     color: "bg-sky-50 hover:bg-sky-100",
     iconBg: "bg-sky-100",
+    iconColor: "text-sky-600",
   },
   {
     label: "Marketing",
-    icon: "📣",
+    Icon: Megaphone,
     description: "SEO, social media, growth hacking",
     color: "bg-orange-50 hover:bg-orange-100",
     iconBg: "bg-orange-100",
+    iconColor: "text-orange-600",
   },
   {
     label: "Personal Development",
-    icon: "🌱",
+    Icon: Leaf,
     description: "Productivity, leadership, communication",
     color: "bg-teal-50 hover:bg-teal-100",
     iconBg: "bg-teal-100",
+    iconColor: "text-teal-600",
   },
 ];
 
@@ -77,15 +104,14 @@ export default function HomeCategoryGrid() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {categories.map((cat) => (
-            <Link
+            <div
               key={cat.label}
-              href="/StudentBrowse"
-              className={`group rounded-2xl p-5 transition-all duration-200 cursor-pointer ${cat.color}`}
+              className={`group rounded-2xl p-5 ${cat.color}`}
             >
               <div
-                className={`w-11 h-11 rounded-xl flex items-center justify-center text-2xl mb-3 ${cat.iconBg}`}
+                className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3 ${cat.iconBg}`}
               >
-                {cat.icon}
+                <cat.Icon className={`w-5.5 h-5.5 ${cat.iconColor}`} weight="duotone" />
               </div>
               <h3 className="font-semibold text-gray-900 text-sm group-hover:text-emerald-700 transition-colors">
                 {cat.label}
@@ -93,7 +119,7 @@ export default function HomeCategoryGrid() {
               <p className="text-xs text-gray-500 mt-1 leading-relaxed">
                 {cat.description}
               </p>
-            </Link>
+            </div>
           ))}
         </div>
       </div>

@@ -189,6 +189,29 @@ export default function AuthForm({ mode }: AuthFormProps) {
     }
   };
 
+  const handleDemoLogin = async (role: "student" | "creator") => {
+    setError("");
+    setLoading(true);
+    const demoEmail = role === "student" ? "student@demo.com" : "creator@demo.com";
+    try {
+      const result = await signIn("credentials", {
+        email: demoEmail,
+        password: "Demo1234!",
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Demo account not ready. Please run: npm run seed");
+        return;
+      }
+      router.push(role === "creator" ? "/CreatorDashboard" : "/StudentDashboard");
+      router.refresh();
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -731,6 +754,35 @@ export default function AuthForm({ mode }: AuthFormProps) {
               )}
             </button>
           </form>
+
+          {/* Demo accounts — login only */}
+          {isLogin && (
+            <div className="mt-5 rounded-2xl border border-dashed border-gray-200 bg-gray-50 p-4">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3 text-center">
+                Demo Access
+              </p>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleDemoLogin("student")}
+                  disabled={loading}
+                  className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-sm font-semibold hover:bg-blue-100 transition-colors disabled:opacity-50"
+                >
+                  <GraduationCap className="w-4 h-4" weight="fill" />
+                  Student Demo
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleDemoLogin("creator")}
+                  disabled={loading}
+                  className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-sm font-semibold hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                >
+                  <Video className="w-4 h-4" weight="fill" />
+                  Creator Demo
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Divider */}
           <div className="relative my-6">

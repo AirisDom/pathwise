@@ -1,20 +1,36 @@
-import Link from "next/link";
+"use client";
 
-const lumiFeatures = [
+import Link from "next/link";
+import { Sparkle, ChatCircle, TrendUp, ArrowRight } from "@phosphor-icons/react";
+import type { Icon } from "@phosphor-icons/react";
+
+const lumiFeatures: {
+  Icon: Icon;
+  iconColor: string;
+  iconBg: string;
+  title: string;
+  description: string;
+}[] = [
   {
-    icon: "✨",
+    Icon: Sparkle,
+    iconColor: "text-amber-500",
+    iconBg: "bg-amber-50",
     title: "Personalised Learning Paths",
     description:
       "Lumi analyses your goals and skill level to build a custom curriculum just for you.",
   },
   {
-    icon: "💬",
+    Icon: ChatCircle,
+    iconColor: "text-blue-500",
+    iconBg: "bg-blue-50",
     title: "Ask Anything, Anytime",
     description:
       "Stuck on a concept? Lumi answers your questions instantly — no waiting for a forum reply.",
   },
   {
-    icon: "📈",
+    Icon: TrendUp,
+    iconColor: "text-emerald-500",
+    iconBg: "bg-emerald-50",
     title: "Progress & Insights",
     description:
       "Lumi tracks where you excel and where you need practice, so you never waste time.",
@@ -33,7 +49,7 @@ const chatMessages = [
   { role: "user", text: "Yes, show me!" },
   {
     role: "lumi",
-    text: "Week 1–3: Python basics & functions. Week 4–6: Data analysis with pandas & NumPy. Week 7–9: Data visualisation. Week 10–12: Machine learning fundamentals. Ready to begin? 🚀",
+    text: "Week 1–3: Python basics & functions. Week 4–6: Data analysis with pandas & NumPy. Week 7–9: Data visualisation. Week 10–12: Machine learning fundamentals. Ready to begin?",
   },
 ];
 
@@ -45,7 +61,7 @@ export default function HomeLumiSection() {
           {/* Left — Text */}
           <div>
             <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full mb-5">
-              <span>✦</span> Meet Lumi
+              <Sparkle className="w-3.5 h-3.5" weight="fill" /> Meet Lumi
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight">
               Your AI learning companion,{" "}
@@ -60,7 +76,9 @@ export default function HomeLumiSection() {
             <ul className="mt-8 space-y-5">
               {lumiFeatures.map((f) => (
                 <li key={f.title} className="flex gap-4">
-                  <span className="text-2xl mt-0.5">{f.icon}</span>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${f.iconBg}`}>
+                    <f.Icon className={`w-5 h-5 ${f.iconColor}`} weight="fill" />
+                  </div>
                   <div>
                     <p className="font-semibold text-gray-900">{f.title}</p>
                     <p className="text-sm text-gray-500 mt-0.5">
@@ -72,11 +90,11 @@ export default function HomeLumiSection() {
             </ul>
 
             <Link
-              href="/StudentBrowse"
+              href="/signup"
               className="inline-flex items-center gap-2 mt-10 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-colors"
             >
               Start learning with Lumi
-              <span>→</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
 
@@ -126,8 +144,8 @@ export default function HomeLumiSection() {
                   <p className="text-sm text-gray-400 flex-1">
                     Ask Lumi anything…
                   </p>
-                  <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white text-xs">
-                    ↑
+                  <div className="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white">
+                    <ArrowRight className="w-3.5 h-3.5" weight="bold" />
                   </div>
                 </div>
               </div>

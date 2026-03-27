@@ -5,11 +5,8 @@ import Link from "next/link";
 import {
   Star,
   Users,
-  BookOpen,
   PlayCircle,
-  ArrowRight,
   Loader2,
-  GraduationCap,
   Sparkles,
 } from "lucide-react";
 
@@ -76,22 +73,14 @@ export default function DynamicFeaturedCourses() {
               of students.
             </p>
           </div>
-          <Link
-            href="/StudentBrowse"
-            className="hidden sm:flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
-          >
-            View All Courses
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
 
         {/* Course Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {courses.map((course) => (
-            <Link
+            <div
               key={course.id}
-              href={`/courses/${course.slug}`}
-              className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+              className="group bg-white rounded-2xl border border-gray-200 overflow-hidden"
             >
               {/* Thumbnail */}
               <div className="relative aspect-video overflow-hidden bg-gray-100">
@@ -116,7 +105,7 @@ export default function DynamicFeaturedCourses() {
 
               {/* Content */}
               <div className="p-4">
-                <h3 className="text-sm font-semibold text-gray-900 group-hover:text-emerald-600 transition-colors line-clamp-2 mb-1.5">
+                <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mb-1.5">
                   {course.title}
                 </h3>
 
@@ -152,19 +141,8 @@ export default function DynamicFeaturedCourses() {
                   </span>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
-        </div>
-
-        {/* Mobile view all */}
-        <div className="mt-8 text-center sm:hidden">
-          <Link
-            href="/StudentBrowse"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-emerald-600 hover:text-emerald-700 transition-colors"
-          >
-            View All Courses
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
       </div>
     </section>
